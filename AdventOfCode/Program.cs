@@ -44,6 +44,9 @@ namespace AdventOfCode
                     case "20193":
                         Day3_2019.calculate();
                         break;
+                    case "20194":
+                        Day4_2019.calculate();
+                        break;
                     case "20202":
                         Day2_2020.calculate();
                         break;
@@ -52,6 +55,9 @@ namespace AdventOfCode
                         break;
                     case "20204":
                         Day4_2020.calculate();
+                        break;
+                    case "20205":
+                        Day5_2020.calculate();
                         break;
                     default:
                         System.Console.WriteLine("That one isn't implemented");
