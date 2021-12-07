@@ -72,7 +72,7 @@ namespace AdventOfCode
                     generations++;
                 }
                 totalNumberOfKids += thisgenfishes.Sum(); //always 1 but for good measure 
-                howManyFishesWillEachGenerate[fish - 1] += totalNumberOfKids;
+                howManyFishesWillEachGenerate[fish - 1] += totalNumberOfKids; //index 0 have fish with startvalue 1 etc. 
                 //System.Console.WriteLine("Number " + fish + ": " + (totalNumberOfKids + 1));
             }
             //Count how many times the different fishes appear
