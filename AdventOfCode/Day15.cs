@@ -1,5 +1,5 @@
-﻿using System.Linq;
-using System.Numerics;
+﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace AdventOfCode
 {
@@ -24,6 +24,49 @@ namespace AdventOfCode
 
             System.Console.WriteLine("Answer part 1: " + answer);
 
+            // Part 2
+            // Thanks to https://github.com/encse for input to how it's supposed to be solved correctly
+            var allNumbersDictionary = new Dictionary<Point, int>(); // the initial risk values
+            var costFromStartDictionary = new Dictionary<Point, int>(); // calculated risk 
+            for (int y = 0; y < lines.Length; y++)
+                for (int i = 0; i < 5; i++)
+                    for (int x = 0; x < lines[y].Length; x++)
+                        for (int j = 0; j < 5; j++)
+                        {
+                            int val = (lines[y][x] - '0') + (j + i);
+                            if (val > 9)
+                                val = val - 9;
+                            allNumbersDictionary.Add(new Point(x + j * lines[y].Length, y + i * lines.Length), val);
+
+                        }
+            bool endFound = false;
+            var myQueue = new PriorityQueue<Point, int>();
+            myQueue.Enqueue(new Point(0, 0), 0); // Start with upper left 
+            var endPoint = new Point(lines[0].Length * 5 - 1, lines.Length * 5 - 1);
+            var startPoint = new Point(0, 0);
+            costFromStartDictionary.Add(startPoint, 0);
+            while (!endFound)
+            {
+                var point = myQueue.Dequeue();
+                foreach (var neighbour in Neighbours(point))
+                {
+                    if (allNumbersDictionary.ContainsKey(neighbour) && !costFromStartDictionary.ContainsKey(neighbour))
+                    {
+                        var totalRisk = costFromStartDictionary[point] + allNumbersDictionary[neighbour];
+                        costFromStartDictionary[neighbour] = totalRisk;
+                        if (neighbour == endPoint)
+                        {
+                            endFound = true;
+                        }
+                        myQueue.Enqueue(neighbour, totalRisk);
+                    }
+                    // Theoretically there might be a case where we reach a point again, but considering we're 
+                    // calculating with smallest total risk first, each point will be reached by the lowest risk score
+                    // first
+                }
+            }
+            answer = costFromStartDictionary[endPoint];
+            System.Console.WriteLine("Answer part 2: " + answer);
         }
 
         public static int stepOne(int x, int y, int[][] numbers, int[][] costToEnd)
@@ -84,5 +127,16 @@ namespace AdventOfCode
                 }
             }
         }
+
+        // Returning all neighbours, can return invalid neighbors if point is on the edge
+        public static IEnumerable<Point> Neighbours(Point point) =>
+        new[] {
+           point with {y = point.y + 1},
+           point with {y = point.y - 1},
+           point with {x = point.x + 1},
+           point with {x = point.x - 1},
+        };
     }
 }
+
+record Point(int x, int y); // New feature in Visual studio 2022! 
