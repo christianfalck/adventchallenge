@@ -90,6 +90,23 @@ namespace AdventOfCode
             }
             System.Console.WriteLine("Day: " + numberOfDaysPart2 + ", there are " + answerPart2);
 
+
+            // After solving day 14 I realized this is a more effective way: 
+            BigInteger answer = 0;
+            int numberOfDays = 256;
+            BigInteger[] fishesWithDayLeft = new BigInteger[9] { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+            foreach (int i in numbers)
+                fishesWithDayLeft[i]++;
+            for(int i = 0; i < numberOfDays; i++)
+            {
+                BigInteger tmp = fishesWithDayLeft[0];
+                for (int j = 0; j < fishesWithDayLeft.Length - 1; j++)
+                    fishesWithDayLeft[j] = fishesWithDayLeft[j + 1];
+                fishesWithDayLeft[8] = tmp; // new born babies
+                fishesWithDayLeft[6] += tmp; // parents ready for another kid
+            }
+            answer = fishesWithDayLeft.Aggregate(BigInteger.Add);
+            System.Console.WriteLine("Bonus answer after doing day 14 challenge: " + answer);
         }
     }
 }
