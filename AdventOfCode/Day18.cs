@@ -9,11 +9,41 @@ namespace AdventOfCode
         public static void calculate()
         {
             string[] lines = System.IO.File.ReadLines("./../../../inputfiles/day18.txt").ToArray();
+
+            // Part 1
+            int answerPart1 = DoHomework(lines);
+
+            // Part 2 - I have to apologise but the oldest kid is nagging me for attention to his computer game. So no pretty solution :-)
+            int answerPart2 = 0;
+            for(int i = 0; i < lines.Length; i++)
+                for(int j = 0; j < lines.Length; j++)
+                {
+                    if(i != j)
+                    {
+                        List<string> tmpList = new List<string>();
+                        tmpList.Add(lines[i]);
+                        tmpList.Add(lines[j]);
+                        int tmp = DoHomework(tmpList.ToArray());
+                        if (tmp > answerPart2)
+                            answerPart2 = tmp;
+                        tmpList = new List<string>();
+                        tmpList.Add(lines[j]);
+                        tmpList.Add(lines[i]);
+                        tmp = DoHomework(tmpList.ToArray());
+                        if (tmp > answerPart2)
+                            answerPart2 = tmp;
+                    }
+                }
+            
+            System.Console.WriteLine("Answer part 1: " + answerPart1 + ", and part 2: " + answerPart2);
+        }
+
+        public static int DoHomework(string[] lines)
+        {
             string assignmentSoFar = lines[0];
             SnailNumberWithHeight[] myList = Transform(assignmentSoFar);
             for (int rowNbr = 1; rowNbr < lines.Length; rowNbr++)
             {
-                //assignmentSoFar = "[" + assignmentSoFar + "],[" + lines[rowNbr] + "]";
                 SnailNumberWithHeight[] newList = Transform(lines[rowNbr]);
                 AddParenthesis(myList);
                 AddParenthesis(newList);
@@ -61,22 +91,22 @@ namespace AdventOfCode
 
             // Calculate magnitude
             // Find the element with the most parenteses and calculate that + the next. Start over until only one remains. 
-            while(myList.Length > 1)
+            while (myList.Length > 1)
             {
                 int maxParentheses = myList.Max(x => x.parentheses);
 
                 for (int i = 0; i < myList.Length - 1; i++)
                 {
-                    if(myList[i].parentheses == maxParentheses)
+                    if (myList[i].parentheses == maxParentheses)
                     {
                         int newValue = myList[i].value * 3 + myList[i + 1].value * 2;
-                        myList[i].value = newValue; 
-                        myList[i].parentheses--; 
+                        myList[i].value = newValue;
+                        myList[i].parentheses--;
                         myList = myList.Where((source, index) => index != i + 1).ToArray(); // Remove the other value
                     }
                 }
             }
-            System.Console.WriteLine("Answer part 1: " + myList[0].value + ", and part 2: " + 2);
+            return myList[0].value;
         }
 
         // Transforms the number into a series of numbers with height (number of paranteses around) and value. 
