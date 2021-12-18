@@ -11,7 +11,7 @@ namespace AdventOfCode
             for (int x = 0; x < 287; x++)
                 for(int y = -103; y < 103; y++)
                 {
-                    // try all combinations - brute force
+                    // try all combinations - brute force 
                     var myCoord = new Coordinate(0, 0);
                     int iteration = 0;
                     int maxY = 0;
@@ -32,8 +32,6 @@ namespace AdventOfCode
                         }
                     }
                 }
-
-
 
             System.Console.WriteLine("Answer: " + answerPart1 + ", and " + answerPart2);
         }
