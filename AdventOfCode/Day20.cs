@@ -11,100 +11,70 @@ namespace AdventOfCode
         {
             string[] lines = System.IO.File.ReadLines("./../../../inputfiles/day20.txt").ToArray();
 
-            bool[] algorithm = new bool[lines[0].Length];
-            for (int i = 0; i < lines[0].Length; i++)
-                algorithm[i] = lines[0][i] == '#' ? true : false; 
+            string algorithm = lines[0];
 
-            // Initial iteration of the image, with two frames of . around to simplify next iteration
-            List<bool[]> image = new List<bool[]>();
-            int widthNextIteration = lines[2].Length + 4;
-            bool[] emptyrow = new bool[widthNextIteration];
-            image.Add(emptyrow);
-            image.Add(emptyrow);
-            for (int i = 2; i < lines.Length; i++)
+            // Trying storing in dictionary with coordinates
+            Dictionary<Pixel, string> image = new Dictionary<Pixel, string>();
+            for (int y = 2; y < lines.Length; y++)
             {
-                bool[] row = new bool[widthNextIteration];
-                int index = 2;
-                foreach (char c in lines[i])
+                for (int x = 0; x < lines[2].Length; x++)
                 {
-                    row[index++] = (c == '#') ? true : false;
+                    image[new Pixel(x, y - 2)] = lines[y][x].ToString(); // y-2 since we're looking at input row 3 for our row 1
                 }
-                image.Add(row);
             }
-            image.Add(emptyrow);
-            image.Add(emptyrow);
 
-            // An iteration
-            // For each iteration, look through the current x * x image and calculate next one 
-            int numberOfIterations = 2;
-            int whitepixels = 0;
-            for (int i = 0; i < numberOfIterations; i++)
-            {
-                for (int a = 0; a < image.Count; a++)
-                {
-                    for (int b = 0; b < image[0].Length; b++)
-                    {
-                        if (image[a][b])
-                        {
-                            Console.Write("#");
-                            whitepixels++;
-                        }
-                        else
-                            Console.Write(".");
-                    }
-
-                    Console.WriteLine("");
-                }
-                Console.WriteLine("------ " + whitepixels +" --------");
-
-                widthNextIteration += 2;
-                List<bool[]> newImage = new List<bool[]>();
-                emptyrow = new bool[widthNextIteration];
-                newImage.Add(emptyrow);
-                newImage.Add(emptyrow);
-                for (int rowNumber = 1; rowNumber < image.Count - 1; rowNumber++) // don't need to calculate first or last
-                {
-                    bool[] newRow = new bool[widthNextIteration];
-                    for (int colNumber = 1; colNumber < widthNextIteration - 3; colNumber++) // don't need to calculate first or last
-                    {
-                        
-                        int valueToCheckInAlgorithm = 256 * (image[rowNumber - 1][colNumber - 1] ? 1 : 0) +
-                            128 * (image[rowNumber - 1][colNumber] ? 1 : 0) +
-                            64 * (image[rowNumber - 1][colNumber + 1] ? 1 : 0) +
-                            32 * (image[rowNumber][colNumber - 1] ? 1 : 0) +
-                            16 * (image[rowNumber][colNumber] ? 1 : 0) +
-                            8 * (image[rowNumber][colNumber + 1] ? 1 : 0) +
-                            4 * (image[rowNumber+1][colNumber - 1] ? 1 : 0) +
-                            2 * (image[rowNumber+1][colNumber] ? 1 : 0) +
-                            1 * (image[rowNumber+1][colNumber + 1] ? 1 : 0);
-                        newRow[colNumber+1] = algorithm[valueToCheckInAlgorithm]; // shift new image one step to the right 
-                    }
-                    newImage.Add(newRow);
-                }
-                newImage.Add(emptyrow);
-                newImage.Add(emptyrow);
-                image = newImage;
-            }
             int answer1 = 0;
-            for (int i = 0; i < image.Count; i++)
+            int answer2 = 0;
+            int numberOfIterations = 50;
+            for (int i = 1; i <= numberOfIterations; i++)
             {
-                for (int j = 0; j < image[0].Length; j++)
+                Dictionary<Pixel, string> enhancedImage = new();
+                string defaultPixel = i % 2 == 1 ? "." : "#"; // All uncalculated 
+                // Since all "surrounding" pixels invert color every enhancement, we need to know how large our image is
+                int minX = image.Min(a => a.Key.x);
+                int maxX = image.Max(a => a.Key.x);
+                int minY = image.Min(a => a.Key.y);
+                int maxY = image.Max(a => a.Key.y);
+
+                // More than 2 pixels out doesn't matter since those will be surrounded by similar pixels and invert next step.
+                for (int x = minX - 2; x < maxX + 2; x++)
                 {
-                    if (image[i][j])
+                    for (int y = minY - 2; y < maxY + 2; y++)
                     {
-                        answer1++;
-                        Console.Write("#");
+                        // If the value haven't been calculated, it's inverted (which is why I use GetValueOrDefault)
+                        //TODO: This should be able to do in a nicer way!
+                        int valueToCheckInAlgorithm = image.GetValueOrDefault(new Pixel(x - 1, y - 1), defaultPixel) == "#" ? 256 : 0;
+                        valueToCheckInAlgorithm += image.GetValueOrDefault(new Pixel(x, y - 1), defaultPixel) == "#" ? 128 : 0;
+                        valueToCheckInAlgorithm += image.GetValueOrDefault(new Pixel(x + 1, y - 1), defaultPixel) == "#" ? 64 : 0;
+                        valueToCheckInAlgorithm += image.GetValueOrDefault(new Pixel(x - 1, y), defaultPixel) == "#" ? 32 : 0;
+                        valueToCheckInAlgorithm += image.GetValueOrDefault(new Pixel(x, y), defaultPixel) == "#" ? 16 : 0;
+                        valueToCheckInAlgorithm += image.GetValueOrDefault(new Pixel(x + 1, y), defaultPixel) == "#" ? 8 : 0;
+                        valueToCheckInAlgorithm += image.GetValueOrDefault(new Pixel(x - 1, y + 1), defaultPixel) == "#" ? 4 : 0;
+                        valueToCheckInAlgorithm += image.GetValueOrDefault(new Pixel(x, y + 1), defaultPixel) == "#" ? 2 : 0;
+                        valueToCheckInAlgorithm += image.GetValueOrDefault(new Pixel(x + 1, y + 1), defaultPixel) == "#" ? 1 : 0;
+
+                        enhancedImage[new Pixel(x, y)] = algorithm[valueToCheckInAlgorithm].ToString();
                     }
-                    else
-                        Console.Write(".");
                 }
-                    
-                Console.WriteLine("");
+                image = enhancedImage;
+                if (i == 2)
+                    answer1 = image.Values.Count(a => a == "#"); 
             }
-                
-            System.Console.WriteLine("Answer: " + answer1 + ", and " + 2);
+            answer2 = image.Values.Count(a => a == "#");
+
+            System.Console.WriteLine("Answer: " + answer1 + ", and " + answer2);
         }
     }
 
-    record Pixel(int x, int y);
+    // Used as a key in the dictionary
+    public struct Pixel
+    {
+        public int x;
+        public int y;
+        public Pixel(int x, int y)
+        {
+            this.x = x;
+            this.y = y;
+        }
+    }
 }
