@@ -7,8 +7,8 @@ namespace AdventOfCode
     class Day21
     {
 
-        BigInteger player1_wins;
-        BigInteger player2_wins;
+        long player1_wins;
+        long player2_wins;
 
         Dictionary<int, int> oddsForNext3throws;
 
@@ -25,7 +25,7 @@ namespace AdventOfCode
             int diceThrows = 0;
 
             int answer1 = 0;
-            BigInteger answer2 = 0;
+            long answer2 = 0;
 
             // Part 1
             while (player1score < 1000 && player2score < 1000)
@@ -102,7 +102,7 @@ namespace AdventOfCode
         }
 
 
-        public void makeRound2(int player1position, int player2position, int player1score, int player2score, BigInteger occurences, bool player1)
+        public void makeRound2(int player1position, int player2position, int player1score, int player2score, long occurences, bool player1)
         {
             foreach (int nextSteps in oddsForNext3throws.Keys)
             {
@@ -112,7 +112,7 @@ namespace AdventOfCode
                     if (landOnTile == 0)
                         landOnTile = 10;
                     int score = player1score + landOnTile;
-                    BigInteger probability = occurences * oddsForNext3throws[nextSteps];
+                    long probability = occurences * oddsForNext3throws[nextSteps];
                     // If the player wins, add those numbers. 
                     if (score >= 21)
                     {
@@ -129,7 +129,7 @@ namespace AdventOfCode
                     if (landOnTile == 0)
                         landOnTile = 10;
                     int score = player2score + landOnTile;
-                    BigInteger probability = occurences * oddsForNext3throws[nextSteps];
+                    long probability = occurences * oddsForNext3throws[nextSteps];
                     // If the player wins, add those numbers. 
                     if (score >= 21)
                     {
