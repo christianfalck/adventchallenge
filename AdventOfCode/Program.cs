@@ -74,6 +74,9 @@ namespace AdventOfCode
                     case "20":
                         Day20.calculate();
                         break;
+                    case "21":
+                        Day21.calculate();
+                        break;
                     case "20191":
                         Day1_2019.calculate();
                         break;
