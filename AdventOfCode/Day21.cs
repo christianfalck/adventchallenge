@@ -14,8 +14,6 @@ namespace AdventOfCode
 
         Dictionary<int, int> oddsForNext3throws;
 
-        Dictionary<(int, int), BigInteger> check; // Key: Player, round. Value: Number of wins that round
-
         public Day21()
         {
 
@@ -30,8 +28,6 @@ namespace AdventOfCode
 
             int answer1 = 0;
             BigInteger answer2 = 0;
-
-            check = new();
 
             // Part 1
             while (player1score < 1000 && player2score < 1000)
@@ -80,10 +76,6 @@ namespace AdventOfCode
 
             player1_wins = 0;
             player2_wins = 0;
-            List<RoundStatistics> player1setup = new();
-            List<RoundStatistics> player2setup = new();
-            player1setup.Add(new RoundStatistics(player1Position, 0, 1));
-            player2setup.Add(new RoundStatistics(player2Position, 0, 1));
 
             /**
              * +3 = 1/27
@@ -118,7 +110,7 @@ namespace AdventOfCode
             {
                 if (player1)
                 {
-                    int landOnTile = (player1position + nextSteps)%10;
+                    int landOnTile = (player1position + nextSteps) % 10;
                     if (landOnTile == 0)
                         landOnTile = 10;
                     int score = player1score + landOnTile;
@@ -127,11 +119,6 @@ namespace AdventOfCode
                     if (score >= 21)
                     {
                         player1_wins += probability;
-                        // These 4 rows can be removed when it works
-                        if (check.ContainsKey((1, round)))
-                            check[(1, round)] += probability;
-                        else
-                            check.Add((1, round), probability);
                     }
                     else
                     {
@@ -140,7 +127,7 @@ namespace AdventOfCode
                 }
                 else
                 {
-                    int landOnTile = (player2position + nextSteps)%10;
+                    int landOnTile = (player2position + nextSteps) % 10;
                     if (landOnTile == 0)
                         landOnTile = 10;
                     int score = player2score + landOnTile;
@@ -149,11 +136,6 @@ namespace AdventOfCode
                     if (score >= 21)
                     {
                         player2_wins += probability;
-                        // These 4 rows can be removed when it works
-                        if (check.ContainsKey((2, round)))
-                            check[(2, round)] += probability;
-                        else
-                            check.Add((2, round), probability);
                     }
                     else
                     {
@@ -163,67 +145,5 @@ namespace AdventOfCode
 
             }
         }
-
-        public void makeRound(List<RoundStatistics> previousRoundThisPlayer, List<RoundStatistics> previousRoundOtherPlayer, bool player1, BigInteger oddsOtherPlayerDidntWinLastround, int round)
-        {
-            foreach (RoundStatistics roundStatistic in previousRoundThisPlayer)
-            {
-                // All starting positions for next round
-                List<RoundStatistics> thisRound = new();
-                BigInteger didntWin = 0;
-                // Example: Position 1, score 1, nbr = 1
-                // Another example: Position 7, score 12, nbr 872312
-                foreach (int nextSteps in oddsForNext3throws.Keys)
-                {
-                    // We know how many occurences that lead us here. Then we'll continue with the statistics for the following 3 throws. 
-                    int landOnTile = (roundStatistic.position + nextSteps) % 10;
-                    if (landOnTile == 0)
-                        landOnTile = 10;
-                    int score = roundStatistic.score + landOnTile;
-                    BigInteger probability = roundStatistic.numberOfOccurences * oddsForNext3throws[nextSteps] * oddsOtherPlayerDidntWinLastround;
-                    // If the player wins, add those numbers. 
-                    if (score >= 21)
-                    {
-                        if (player1)
-                        {
-                            player1_wins += probability;
-                            if (check.ContainsKey((1, round)))
-                                check[(1, round)] += probability;
-                            else
-                                check.Add((1, round), probability);
-                        }
-                        else
-                        {
-                            player2_wins += probability;
-                            if (check.ContainsKey((2, round)))
-                                check[(2, round)] += probability;
-                            else
-                                check.Add((2, round), probability);
-                        }
-                    }
-                    else // Add this outcome to the list for next iteration and all those outcomes also result in next round for other player
-                    {
-                        thisRound.Add(new RoundStatistics(landOnTile, score, probability));
-                        didntWin += oddsForNext3throws[nextSteps]; // how many of the 27 different outcomes result in that this player doesn't win
-                    }
-                }
-                if (didntWin > 0)
-                    makeRound(previousRoundOtherPlayer, thisRound, !player1, didntWin, round++);
-            }
-        }
     }
-
-    class RoundStatistics
-    {
-        public RoundStatistics(int position, int score, BigInteger numberOfOccurences)
-        {
-            this.position = position;
-            this.score = score;
-            this.numberOfOccurences = numberOfOccurences;
-        }
-        public int position;
-        public int score;
-        public BigInteger numberOfOccurences;
-    }
-
 }
