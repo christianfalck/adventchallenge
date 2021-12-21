@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
-using System.Text;
 
 namespace AdventOfCode
 {
@@ -96,7 +94,7 @@ namespace AdventOfCode
             oddsForNext3throws.Add(9, 1);
 
             //makeRound(player1setup, player2setup, true, 1, 1);
-            makeRound2(player1Position, player2Position, 0, 0, 1, true, 1);
+            makeRound2(player1Position, player2Position, 0, 0, 1, true);
 
             answer2 = player1_wins > player2_wins ? player1_wins : player2_wins;
 
@@ -104,7 +102,7 @@ namespace AdventOfCode
         }
 
 
-        public void makeRound2(int player1position, int player2position, int player1score, int player2score, BigInteger occurences, bool player1, int round)
+        public void makeRound2(int player1position, int player2position, int player1score, int player2score, BigInteger occurences, bool player1)
         {
             foreach (int nextSteps in oddsForNext3throws.Keys)
             {
@@ -122,7 +120,7 @@ namespace AdventOfCode
                     }
                     else
                     {
-                        makeRound2(landOnTile, player2position, score, player2score, probability, false, round + 1);
+                        makeRound2(landOnTile, player2position, score, player2score, probability, false);
                     }
                 }
                 else
@@ -139,10 +137,9 @@ namespace AdventOfCode
                     }
                     else
                     {
-                        makeRound2(player1position, landOnTile, player1score, score, probability, true, round + 1);
+                        makeRound2(player1position, landOnTile, player1score, score, probability, true);
                     }
                 }
-
             }
         }
     }
