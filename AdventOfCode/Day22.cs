@@ -12,7 +12,8 @@ namespace AdventOfCode
             int answer1 = 0;
             BigInteger answer2 = 0;
             Dictionary<(int, int, int), bool> cubesActive = new();
-            foreach (string line in System.IO.File.ReadLines("./../../../inputfiles/day22.txt"))
+            string[] lines = System.IO.File.ReadLines("./../../../inputfiles/day22.txt").ToArray();
+            foreach (string line in lines.Take(20))
             {
                 bool active = line[..2] == "on";
 
