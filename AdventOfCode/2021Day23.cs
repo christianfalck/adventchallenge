@@ -4,12 +4,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-class Day23
+class Day23_2021
 {
 
     public static void calculate()
     {
-        var inputText = File.ReadAllText("./../../../inputfiles/day23.txt");
+        var inputText = File.ReadAllText("./../../../inputfiles/2021day23.txt");
 
         var part1Map = inputText.Where(c => c == '.' || (c >= 'A' && c <= 'D')).ToArray();
         var hallway = part1Map.Where(c => c == '.').Count(); // How large is the hallway

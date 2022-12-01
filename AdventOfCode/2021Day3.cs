@@ -5,7 +5,7 @@ using System.Text;
 
 namespace AdventOfCode
 {
-    class Day3
+    class Day3_2021
     {
         public static void calculate()
         {
@@ -13,7 +13,7 @@ namespace AdventOfCode
             //Part 1
             int numberOfLines = 0;
             int[] number = new int[12];
-            foreach (string line in System.IO.File.ReadLines("./../../../inputfiles/day3.txt"))
+            foreach (string line in System.IO.File.ReadLines("./../../../inputfiles/2021day3.txt"))
             {
                 numberOfLines++;
                 var intArray = line.Select(c => c - '0').ToArray();
@@ -43,7 +43,7 @@ namespace AdventOfCode
             //Part 2
             //I now know that there are 1000 lines with 12 digits each
             List<int[]> allNumbers = new List<int[]>();
-            foreach (string line in System.IO.File.ReadLines("./../../../inputfiles/day3.txt"))
+            foreach (string line in System.IO.File.ReadLines("./../../../inputfiles/2021day3.txt"))
             {
                 allNumbers.Add(line.Select(c => c - '0').ToArray());
             }

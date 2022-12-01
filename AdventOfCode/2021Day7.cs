@@ -7,11 +7,11 @@ using System.Text;
 
 namespace AdventOfCode
 {
-    class Day7
+    class Day7_2021
     {
         public static void calculate()
         {
-            string text = File.ReadAllText("./../../../inputfiles/day7.txt");
+            string text = File.ReadAllText("./../../../inputfiles/2021day7.txt");
             int[] crabs = Array.ConvertAll<string, int>(text.Split(','), int.Parse);
 
             //Part 1

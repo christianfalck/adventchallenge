@@ -4,11 +4,11 @@ using System.Linq;
 
 namespace AdventOfCode
 {
-    class Day18
+    class Day18_2021
     {
         public static void calculate()
         {
-            string[] lines = System.IO.File.ReadLines("./../../../inputfiles/day18.txt").ToArray();
+            string[] lines = System.IO.File.ReadLines("./../../../inputfiles/2021day18.txt").ToArray();
 
             // Part 1
             int answerPart1 = DoHomework(lines);

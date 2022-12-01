@@ -5,13 +5,13 @@ using System.Text;
 
 namespace AdventOfCode
 {
-    class Day8
+    class Day8_2021
     {
         public static void calculate()
         {
             int answerPart1 = 0;
             int answerPart2 = 0;
-            foreach (string line in System.IO.File.ReadLines("./../../../inputfiles/day8.txt"))
+            foreach (string line in System.IO.File.ReadLines("./../../../inputfiles/2021day8.txt"))
             {
                 string input = line.Substring(0, line.IndexOf("|") - 1);
                 string output = line.Substring(line.IndexOf("|") + 2);

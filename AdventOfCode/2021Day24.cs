@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace AdventOfCode
 {
-    class Day24
+    class Day24_2021
     {
         // I had input from https://github.com/Bpendragon to rewrite this into a better solution
 
@@ -16,7 +16,7 @@ namespace AdventOfCode
 
         Dictionary<(int iteration, long z), List<string>> potentialInputs = new(); // TODO better name of dictionary
 
-        readonly string[] lines = System.IO.File.ReadLines("./../../../inputfiles/day24.txt").ToArray();
+        readonly string[] lines = System.IO.File.ReadLines("./../../../inputfiles/2021day24.txt").ToArray();
 
         public void calculate()
         {

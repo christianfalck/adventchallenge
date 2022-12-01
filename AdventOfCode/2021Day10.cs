@@ -6,11 +6,11 @@ using System.Text;
 
 namespace AdventOfCode
 {
-    class Day10
+    class Day10_2021
     {
         public static void calculate()
         {
-            string[] lines = System.IO.File.ReadLines("./../../../inputfiles/day10.txt").ToArray();
+            string[] lines = System.IO.File.ReadLines("./../../../inputfiles/2021day10.txt").ToArray();
             int answerPart1 = 0;
             List<BigInteger> answerPart2List = new List<BigInteger>();
             char[] openingStrings = { '(', '[', '{', '<' };

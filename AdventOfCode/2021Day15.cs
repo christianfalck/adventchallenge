@@ -3,11 +3,11 @@ using System.Linq;
 
 namespace AdventOfCode
 {
-    class Day15
+    class Day15_2021
     {
         public static void calculate()
         {
-            string[] lines = System.IO.File.ReadLines("./../../../inputfiles/day15.txt").ToArray();
+            string[] lines = System.IO.File.ReadLines("./../../../inputfiles/2021day15.txt").ToArray();
             int[][] allNumbers = new int[lines.Length][];
             int[][] costToEnd = new int[lines.Length][]; // The cost from this point to the end
             for (int y = 0; y < lines.Length; y++)

@@ -10,84 +10,87 @@ namespace AdventOfCode
         {
             while (true)
             {
-                System.Console.WriteLine("Which day should we execute? (1-25 for 2021, otherwise year+number, 20191 for the first one 2019.");
+                System.Console.WriteLine("Which day should we execute? (year+number, 20191 for the first one 2019.");
                 String choice = System.Console.ReadLine();
                 switch(choice)
                 {
-                    case "1":
-                        Day1.calculate();
+                    case "20221":
+                        Day1_2022.calculate();
                         break;
-                    case "2":
-                        Day2.calculate();
+                    case "20211":
+                        Day1_2021.calculate();
                         break;
-                    case "3":
-                        Day3.calculate();
+                    case "20212":
+                        Day2_2021.calculate();
                         break;
-                    case "4":
-                        Day4.calculate();
+                    case "20213":
+                        Day3_2021.calculate();
                         break;
-                    case "5":
-                        Day5.calculate();
+                    case "20214":
+                        Day4_2021.calculate();
                         break;
-                    case "6":
-                        Day6.calculate();
+                    case "20215":
+                        Day5_2021.calculate();
                         break;
-                    case "7":
-                        Day7.calculate();
+                    case "20216":
+                        Day6_2021.calculate();
                         break;
-                    case "8":
-                        Day8.calculate();
+                    case "20217":
+                        Day7_2021.calculate();
                         break;
-                    case "9":
-                        Day9.calculate();
+                    case "20218":
+                        Day8_2021.calculate();
                         break;
-                    case "10":
-                        Day10.calculate();
+                    case "20219":
+                        Day9_2021.calculate();
                         break;
-                    case "11":
-                        Day11.calculate();
+                    case "202110":
+                        Day10_2021.calculate();
                         break;
-                    case "12":
-                        Day12.calculate();
+                    case "202111":
+                        Day11_2021.calculate();
                         break;
-                    case "13":
-                        Day13.calculate();
+                    case "202112":
+                        Day12_2021.calculate();
                         break;
-                    case "14":
-                        Day14.calculate();
+                    case "202113":
+                        Day13_2021.calculate();
                         break;
-                    case "15":
-                        Day15.calculate();
+                    case "202114":
+                        Day14_2021.calculate();
                         break;
-                    case "16":
-                        Day16.calculate();
+                    case "202115":
+                        Day15_2021.calculate();
                         break;
-                    case "17":
-                        Day17.calculate();
+                    case "202116":
+                        Day16_2021.calculate();
                         break;
-                    case "18":
-                        Day18.calculate();
+                    case "202117":
+                        Day17_2021.calculate();
                         break;
-                    case "19":
-                        new Day19().calculate();
+                    case "202118":
+                        Day18_2021.calculate();
                         break;
-                    case "20":
-                        Day20.calculate();
+                    case "202119":
+                        new Day19_2021().calculate();
                         break;
-                    case "21":
-                        new Day21();
+                    case "202120":
+                        Day20_2021.calculate();
                         break;
-                    case "22":
-                        Day22.calculate();
+                    case "202121":
+                        new Day21_2021();
                         break;
-                    case "23":
-                        Day23.calculate();
+                    case "202122":
+                        Day22_2021.calculate();
                         break;
-                    case "24":
-                        new Day24().calculate();
+                    case "202123":
+                        Day23_2021.calculate();
                         break;
-                    case "25":
-                        Day25.calculate();
+                    case "202124":
+                        new Day24_2021().calculate();
+                        break;
+                    case "202125":
+                        Day25_2021.calculate();
                         break;
                     case "20191":
                         Day1_2019.calculate();

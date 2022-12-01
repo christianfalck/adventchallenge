@@ -5,11 +5,11 @@ using System.Numerics;
 
 namespace AdventOfCode
 {
-    class Day16
+    class Day16_2021
     {
         public static void calculate()
         {
-            string input = File.ReadAllText("./../../../inputfiles/day16.txt");
+            string input = File.ReadAllText("./../../../inputfiles/2021day16.txt");
             // Translate into bits
             string inputAsBits = "";
             foreach (char c in input)

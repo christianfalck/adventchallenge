@@ -5,11 +5,11 @@ using System.Numerics;
 
 namespace AdventOfCode
 {
-    class Day14
+    class Day14_2021
     {
         public static void calculate()
         {
-            string[] lines = System.IO.File.ReadLines("./../../../inputfiles/day14.txt").ToArray();
+            string[] lines = System.IO.File.ReadLines("./../../../inputfiles/2021day14.txt").ToArray();
             string polymer = lines[0];
             string[] rulesList = new string[lines.Length - 2];
             Array.Copy(lines, 2, rulesList, 0, rulesList.Length);

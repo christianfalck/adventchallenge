@@ -4,7 +4,7 @@ using System.Numerics;
 
 namespace AdventOfCode
 {
-    class Day21
+    class Day21_2021
     {
 
         long player1_wins;
@@ -12,7 +12,7 @@ namespace AdventOfCode
 
         Dictionary<int, int> oddsForNext3throws;
 
-        public Day21()
+        public Day21_2021()
         {
 
             int player1Position = 8;

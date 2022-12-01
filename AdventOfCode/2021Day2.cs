@@ -4,7 +4,7 @@ using System.Text;
 
 namespace AdventOfCode
 {
-    class Day2
+    class Day2_2021
     {
         public static void calculate()
         {
@@ -13,7 +13,7 @@ namespace AdventOfCode
             int horizontal_advanced = 0;
             int vertical_advanced = 0;
             int aim = 0;
-            foreach (string line in System.IO.File.ReadLines("./../../../inputfiles/day2.txt"))
+            foreach (string line in System.IO.File.ReadLines("./../../../inputfiles/2021day2.txt"))
             {
                 String[] command = line.Split(" ");
                 switch (command[0])

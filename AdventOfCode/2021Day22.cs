@@ -6,14 +6,14 @@ using System.Text.RegularExpressions;
 
 namespace AdventOfCode
 {
-    class Day22
+    class Day22_2021
     {
         public static void calculate()
         {
             int answer1 = 0;
             long answer2 = 0; // learned the hard way that long/ulong is a lot faster than BigInteger
             Dictionary<(int, int, int), bool> cubesActive = new();
-            string[] lines = System.IO.File.ReadLines("./../../../inputfiles/day22.txt").ToArray();
+            string[] lines = System.IO.File.ReadLines("./../../../inputfiles/2021day22.txt").ToArray();
             foreach (string line in lines.Take(20))
             {
                 bool active = line[..2] == "on";

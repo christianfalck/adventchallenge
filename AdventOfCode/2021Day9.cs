@@ -5,11 +5,11 @@ using System.Text;
 
 namespace AdventOfCode
 {
-    class Day9
+    class Day9_2021
     {
         public static void calculate()
         {
-            string[] lines = System.IO.File.ReadLines("./../../../inputfiles/day9.txt").ToArray();
+            string[] lines = System.IO.File.ReadLines("./../../../inputfiles/2021day9.txt").ToArray();
             int width = lines[0].Length;
             int answerPart1 = 0;
             for (int i = 0; i < width; i++)

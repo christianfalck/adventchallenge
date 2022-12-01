@@ -5,11 +5,11 @@ using System.Text;
 
 namespace AdventOfCode
 {
-    class Day4
+    class Day4_2021
     {
         public static void calculate()
         {
-            string[] lines = System.IO.File.ReadLines("./../../../inputfiles/day4.txt").ToArray();
+            string[] lines = System.IO.File.ReadLines("./../../../inputfiles/2021day4.txt").ToArray();
             //read numbers drawn
             int[] bingoNumbers = Array.ConvertAll<string, int>(lines[0].Split(','), int.Parse);
             //read boards

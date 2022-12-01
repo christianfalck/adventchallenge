@@ -2,12 +2,12 @@
 
 namespace AdventOfCode
 {
-    internal class Day25
+    internal class Day25_2021
     {
         public static void calculate()
         {
             // Setup
-            string[] lines = System.IO.File.ReadLines("./../../../inputfiles/day25.txt").ToArray();
+            string[] lines = System.IO.File.ReadLines("./../../../inputfiles/2021day25.txt").ToArray();
             int[][] cucumbers = new int[lines.Length][];
             bool[][] cucumbersToMove = new bool[lines.Length][];
             for (int y = 0; y < lines.Length; y++)

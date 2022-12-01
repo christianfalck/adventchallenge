@@ -4,13 +4,13 @@ using System.Linq;
 
 namespace AdventOfCode
 {
-    class Day12
+    class Day12_2021
     {
         public static void calculate()
         {
             List<int> answerPart1 = new List<int>();
             Dictionary<string, List<string>> paths = new Dictionary<string, List<string>>();
-            foreach (string line in System.IO.File.ReadLines("./../../../inputfiles/day12.txt"))
+            foreach (string line in System.IO.File.ReadLines("./../../../inputfiles/2021day12.txt"))
             {
                 string first = line.Substring(0, line.IndexOf("-"));
                 string second = line.Substring(line.IndexOf("-") + 1);

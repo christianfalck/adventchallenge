@@ -7,11 +7,11 @@ using System.Text;
 
 namespace AdventOfCode
 {
-    class Day6
+    class Day6_2021
     {
         public static void calculate()
         {
-            string text = File.ReadAllText("./../../../inputfiles/day6.txt");
+            string text = File.ReadAllText("./../../../inputfiles/2021day6.txt");
             int[] numbers = Array.ConvertAll<string, int>(text.Split(','), int.Parse);
 
             //Part 1: just adding new fishes like they did in the example

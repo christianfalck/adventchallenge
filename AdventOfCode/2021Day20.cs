@@ -5,11 +5,11 @@ using System.Text;
 
 namespace AdventOfCode
 {
-    class Day20
+    class Day20_2021
     {
         public static void calculate()
         {
-            string[] lines = System.IO.File.ReadLines("./../../../inputfiles/day20.txt").ToArray();
+            string[] lines = System.IO.File.ReadLines("./../../../inputfiles/2021day20.txt").ToArray();
 
             string algorithm = lines[0];
 

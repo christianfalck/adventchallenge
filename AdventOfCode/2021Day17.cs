@@ -1,7 +1,7 @@
 ﻿
 namespace AdventOfCode
 {
-    class Day17
+    class Day17_2021
     {
         public static void calculate()
         {

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace AdventOfCode
 {
-    class Day1
+    class Day1_2021
     {
         public static void calculate()
         {
@@ -15,7 +15,7 @@ namespace AdventOfCode
             int count = 0;
             int A = 0, B = 0, C = 0;
             int old_sum, new_sum;
-            foreach (string line in System.IO.File.ReadLines("./../../../inputfiles/day1.txt"))
+            foreach (string line in System.IO.File.ReadLines("./../../../inputfiles/2021day1.txt"))
             {
                 this_sonar = Int32.Parse(line);
                 count++;

@@ -5,11 +5,11 @@ using System.Text;
 
 namespace AdventOfCode
 {
-    class Day11
+    class Day11_2021
     {
         public static void calculate()
         {
-            string[] lines = System.IO.File.ReadLines("./../../../inputfiles/day11.txt").ToArray();
+            string[] lines = System.IO.File.ReadLines("./../../../inputfiles/2021day11.txt").ToArray();
             int[][] octopuses = new int[lines.Length][];
             int answerPart1 = 0;
             int answerPart2 = 0;

@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 
 namespace AdventOfCode
 {
-    class Day19
+    class Day19_2021
     {
         // TODO: Only 2 hours of sleep due to sick kids = I won't make this a static solution as with the previous.
         // Also, I got some ideas for how to handle the rotation from the solution megathread at Reddit. 
@@ -17,7 +17,7 @@ namespace AdventOfCode
             scannersBeacons = new();
             scannerLocations = new();
 
-            foreach (string line in System.IO.File.ReadLines("./../../../inputfiles/Day19.txt"))
+            foreach (string line in System.IO.File.ReadLines("./../../../inputfiles/2021Day19.txt"))
             {
                 if (line.StartsWith("---"))
                 {

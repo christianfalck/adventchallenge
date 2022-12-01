@@ -3,14 +3,14 @@ using System.Collections.Generic;
 
 namespace AdventOfCode
 {
-    class Day13
+    class Day13_2021
     {
         public static void calculate()
         {
             List<(int, int)> dots = new List<(int, int)>();
             bool part1done = false;
             int answerPart1 = 0;
-            foreach (string line in System.IO.File.ReadLines("./../../../inputfiles/day13.txt"))
+            foreach (string line in System.IO.File.ReadLines("./../../../inputfiles/2021day13.txt"))
             {
                 if (line == "")
                 {

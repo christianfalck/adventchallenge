@@ -5,11 +5,11 @@ using System.Text;
 
 namespace AdventOfCode
 {
-    class Day5
+    class Day5_2021
     {
         public static void calculate()
         {
-            string[] lines = System.IO.File.ReadLines("./../../../inputfiles/day5.txt").ToArray();
+            string[] lines = System.IO.File.ReadLines("./../../../inputfiles/2021day5.txt").ToArray();
             int[,] vents = new int[1000, 1000];
             foreach (string line in lines)
             {
