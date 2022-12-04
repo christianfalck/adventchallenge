@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 
 namespace AdventOfCode
 {
@@ -18,23 +14,18 @@ namespace AdventOfCode
 
             foreach (string line in System.IO.File.ReadLines("./../../../inputfiles/2022day4.txt"))
             {
-                // Extract the numbers
-                string firstPair = line.Substring(0, line.IndexOf(','));
-                int firstPairStart = int.Parse(firstPair.Substring(0, firstPair.IndexOf('-')));
-                int firstPairEnd = int.Parse(firstPair.Substring(firstPair.IndexOf('-') + 1));
-
-                string secondPair = line.Substring(line.IndexOf(',') + 1);
-                int secondPairStart = int.Parse(secondPair.Substring(0, secondPair.IndexOf('-')));
-                int secondPairEnd = int.Parse(secondPair.Substring(secondPair.IndexOf('-') + 1));
+                // Extract the numbers which is in the format 46-83,29-84 (first pair and second pair separated by ,)
+                var firstPairRange = line.Split(',').First().Split('-').Select(int.Parse);
+                var secondPairRange = line.Split(',').Last().Split('-').Select(int.Parse);
 
                 // Part 1
-                if (firstPairStart <= secondPairStart && secondPairEnd <= firstPairEnd)
+                if (firstPairRange.First() <= secondPairRange.First() && secondPairRange.Last() <= firstPairRange.Last())
                 {
                     //.2345678.  2-8
                     //..34567..  3-7
                     numberOfOverlapsPart1++;
                 }
-                else if (firstPairStart >= secondPairStart && secondPairEnd >= firstPairEnd)
+                else if (firstPairRange.First() >= secondPairRange.First() && secondPairRange.Last() >= firstPairRange.Last())
                 {
                     //...45678.  3-7
                     //.2345678.  2-8
@@ -42,7 +33,7 @@ namespace AdventOfCode
                 }
 
                 // Part 2
-                if (firstPairEnd < secondPairStart || firstPairStart > secondPairEnd)
+                if (firstPairRange.Last() < secondPairRange.First() || firstPairRange.First() > secondPairRange.Last())
                 {
                     // no overlap
                 }
