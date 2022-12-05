@@ -21,7 +21,7 @@ class Day23_2021
         int answer1 = PlayGame(new GameState(part1Map, 0));
 
         // Part 2
-        var inputTextPart2 = File.ReadAllText("./../../../inputfiles/day23part2.txt");
+        var inputTextPart2 = File.ReadAllText("./../../../inputfiles/2021day23part2.txt");
         var extraMapPiece = inputTextPart2.Where(c => c >= 'A' && c <= 'D').ToArray();
         var part2Map = part1Map.Take(hallway + 4).Concat(extraMapPiece).Concat(part1Map.Skip(hallway + 4)).ToArray();
 
