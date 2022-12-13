@@ -12,7 +12,7 @@ namespace AdventOfCode
             {
                 System.Console.WriteLine("Which day should we execute? (year+number, 20191 for the first one 2019.");
                 String choice = System.Console.ReadLine();
-                switch(choice)
+                switch (choice)
                 {
                     case "20221":
                         Day1_2022.calculate();
@@ -49,6 +49,9 @@ namespace AdventOfCode
                         break;
                     case "202212":
                         Day12_2022.calculate();
+                        break;
+                    case "202213":
+                        Day13_2022.calculate();
                         break;
                     case "20211":
                         Day1_2021.calculate();
@@ -160,7 +163,7 @@ namespace AdventOfCode
                         break;
                     default:
                         System.Console.WriteLine("That one isn't implemented");
-                        break; 
+                        break;
                 }
             }
         }
