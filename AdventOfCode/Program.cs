@@ -53,6 +53,9 @@ namespace AdventOfCode
                     case "202213":
                         Day13_2022.calculate();
                         break;
+                    case "202214":
+                        Day14_2022.calculate();
+                        break;
                     case "20211":
                         Day1_2021.calculate();
                         break;
