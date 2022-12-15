@@ -38,7 +38,6 @@ namespace AdventOfCode
                 sensors.Add(new Point(sensorX, sensorY), Math.Abs(sensorX - beaconX) + Math.Abs(sensorY - beaconY));
             }
 
-
             // Part 1: All coordinates on the specified row that aren't beacons
             Dictionary<int, int> coveredCoordinates = new Dictionary<int, int>();
 
@@ -60,7 +59,6 @@ namespace AdventOfCode
                             coveredCoordinates.Add(a, checkRow);
                         }
                     }
-
                 }
             }
 
