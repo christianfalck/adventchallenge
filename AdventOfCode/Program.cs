@@ -14,6 +14,9 @@ namespace AdventOfCode
                 String choice = System.Console.ReadLine();
                 switch (choice)
                 {
+                    case "20231":
+                        Day1_2023.calculate();
+                        break;
                     case "20221":
                         Day1_2022.calculate();
                         break;
