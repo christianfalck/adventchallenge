@@ -13,6 +13,8 @@ namespace AdventOfCode
             int answer = 1, answer2 = 0;
             string[] lines = System.IO.File.ReadLines("./../../../inputfiles/2023day6.txt").ToArray();
 
+            System.Console.WriteLine("Note the time it takes to calculate each part");
+
             // Parse the input
             MatchCollection timeMatches = Regex.Matches(lines[0], @"\d+");
             List<int> times = new List<int>();
@@ -39,7 +41,7 @@ namespace AdventOfCode
                 answer *= tmp;
                 tmp = 0;
             }
-
+            System.Console.WriteLine("Answer part 1: " + answer);
             //Parse the input for part 2
             string timePart2 = "";
             foreach (Match timeMatch in timeMatches)
@@ -61,8 +63,27 @@ namespace AdventOfCode
                     answer2++;
                 }
             }
+            System.Console.WriteLine("Answer part 2: " + answer2);
+            // this can be optimized by simply finding the first winning time,
+            // and then remove the numbers before * 2 since the calculation is symmetrical. 
+            // Let's take the first number as example: 7 seconds, 9 distance
+            // 1 * 6 = 6
+            // 2 * 5 = 10
+            // 3 * 4 = 12
+            // 4 * 3 = 12
+            // 5 * 2 = 10
+            // 6 * 1 = 6
+            // We win already in the second race, then we just take 6 - 1*2 = 4.
+            // We used 6 since 7-1=6, 7 seconds but if we hold 7 seconds we have 0 time
+            int t = 0;
+            while(t * (timePart2Value - t) < distancePart2Value)
+            {
+                t++;
+            }
+            // Answer = time - 1 - (winning race -1) * 2
+            BigInteger bonusAnswer2 = timePart2Value - 1 - (t-1) * 2;
 
-            System.Console.WriteLine("Answer part 1: " + answer + " and part 2: " + answer2);
+            System.Console.WriteLine("Answer part 2 again to show the optimization: " + bonusAnswer2);
         }
     }
 }
