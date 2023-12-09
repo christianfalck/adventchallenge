@@ -75,6 +75,32 @@ namespace AdventOfCode
                 }
             }
 
+            // Part 2: 
+            // Use ranges instead. 
+            // 3489262449 + 222250568 is the first range
+            // find any translation that handles the first value and fetch the range within the translation. 
+            // 3483784779 + 43058912 will cover some of this and translate into 4251908384 + 37581242
+            // where 37581242 = 43058912 - (3489262449-3483784779)
+            // The remaining range 3526843691 + 184669326 will be partly covered by 3526843691 + 39775874
+            // Which will translate into 3583007889 + 39775874
+            // The remaining 3566619565 + 144893452 will be partly covered by 3566619565 + 111511702
+            // Translating into 3949194199 + 111511702
+            // The remaining 3678131267 + 33381750 will be partly covered by 3678131267 + 33029785
+            // Translating into 3549978104 + 33029785
+            // The remaining  3711161052 + 351965 will be covered by 3711161052 + 116605441
+            // Translating into 1199516138 + 351965
+            // ------------
+            // So the first range 3489262449 + 222250568 will be translated seed-to-soil into 5 new ranges
+            // 4251908384 + 37581242
+            // 3583007889 + 39775874
+            // 3949194199 + 111511702
+            // 3549978104 + 33029785
+            // 1199516138 + 351965
+            // ------------
+            // There are 10 ranges from start. Following about the same pattern as above, they will split into 10 * 5^8 ranges
+            // which means 3906250 ranges. This number is so big that it might be required to find ranges that border eachother
+            // and merge them
+
             System.Console.WriteLine("Answer: " + answer + ", and " + answer2);
         }
     }
