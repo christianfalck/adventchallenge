@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq;
 using System.Numerics;
 
@@ -28,7 +27,6 @@ namespace AdventOfCode
                 answer += hand.bid * i;
                 i--;
             }
-
             System.Console.WriteLine("Answer: " + answer + ", and " + 252657399);
         }
 
@@ -38,24 +36,16 @@ namespace AdventOfCode
         {
             if (hand1.value != hand2.value)
             {
+                // One has three of a kind, the other two pairs for instance
                 return hand2.value - hand1.value;
             }
-            // TODO write a while loop where I increase i=0 with one each loop
-            if (ValueOfCard(hand1.cards[0]) != ValueOfCard(hand2.cards[0]))
+            // Below is for when they had the same value, then we go on to compare individual cards
+            for (int a = 0; a <= 3; a++)
             {
-                return ValueOfCard(hand2.cards[0]) - ValueOfCard(hand1.cards[0]);
-            }
-            if (ValueOfCard(hand1.cards[1]) != ValueOfCard(hand2.cards[1]))
-            {
-                return ValueOfCard(hand2.cards[1]) - ValueOfCard(hand1.cards[1]);
-            }
-            if (ValueOfCard(hand1.cards[2]) != ValueOfCard(hand2.cards[2]))
-            {
-                return ValueOfCard(hand2.cards[2]) - ValueOfCard(hand1.cards[2]);
-            }
-            if (ValueOfCard(hand1.cards[3]) != ValueOfCard(hand2.cards[3]))
-            {
-                return ValueOfCard(hand2.cards[3]) - ValueOfCard(hand1.cards[3]);
+                if (ValueOfCard(hand1.cards[a]) != ValueOfCard(hand2.cards[a]))
+                {
+                    return ValueOfCard(hand2.cards[a]) - ValueOfCard(hand1.cards[a]);
+                }
             }
             return ValueOfCard(hand2.cards[4]) - ValueOfCard(hand1.cards[4]);
         }
@@ -72,24 +62,7 @@ namespace AdventOfCode
                 return 11;
             if (card == 'T')
                 return 10;
-            if (card == '9')
-                return 9;
-            if (card == '8')
-                return 8;
-            if (card == '7')
-                return 7;
-            if (card == '6')
-                return 6;
-            if (card == '5')
-                return 5;
-            if (card == '4')
-                return 4;
-            if (card == '3')
-                return 3;
-            if (card == '2')
-                return 2;
-            // Should never get here
-            return 0;
+            return card - '0';
         }
 
         // Five of a kind = 7p, Four of a kind = 6p, Full house = 5p, 
