@@ -11,7 +11,8 @@ namespace AdventOfCode
 
             /* 
              * Create a Splitter dictionary with info about all splitters. 
-             * Created a Visited dictionary where we store information about how many times each tile has been visited. 
+             * Created a Visited dictionary where we store information from which direction each point has been visited,
+             * since we don't need to continue calculate if we've already been in a point from that direction before. 
              * Answer for part 1 will be the number of keys in this dictionary. 
              * Create a class Beam with position and direction. 
              * Put all beams in a queue. 
@@ -21,7 +22,7 @@ namespace AdventOfCode
             startBeam.position = new Point(0, 0); // top left corner
             startBeam.myDirection = Beam.Direction.Right;
             Dictionary<Point, char> splitters = new Dictionary<Point, char>();
-            Dictionary<Point, int> visited = new Dictionary<Point, int>();
+            Dictionary<Point, List<Beam.Direction>> visited = new Dictionary<Point, List<Beam.Direction>>();
             int answer = 0;
             var myQueue = new Queue<Beam>();
             myQueue.Enqueue(startBeam);
@@ -35,27 +36,28 @@ namespace AdventOfCode
                     {
                         splitters.Add(new Point(x, y), lines[y][x]);
                     }
+                    visited.Add(new Point(x, y), new List<Beam.Direction>());
                 }
             }
             while (myQueue.Count > 0)
             {
-                /* TODO
-                 * 
-                 * Just add to the visited dictionary, don't increase
-                 * Make sure you only add to the visited if we're in bounds
-                 * Add some logic to check if we've been here before with the same direction
-                 */
-
-
                 Beam currentBeam = myQueue.Dequeue();
-                // mark current Point as visited
-                if (visited.ContainsKey(currentBeam.position))
+                // Don't continue if the current Beam is out of bounds
+                if (currentBeam.position.x < 0 || currentBeam.position.x >= maxX ||
+                    currentBeam.position.y < 0 || currentBeam.position.y >= maxY)
                 {
-                    visited[currentBeam.position]++;
+                    // Do nothing!
+                    continue;
+                }
+                // mark current Point as visited
+                if (visited[currentBeam.position].Contains(currentBeam.myDirection))
+                {
+                    // Already been here with the same direction. Skip the rest
+                    continue;
                 }
                 else
                 {
-                    visited.Add(currentBeam.position, 1);
+                    visited[currentBeam.position].Add(currentBeam.myDirection);
                 }
 
                 // if we don't stand on a splitter, move one step in direction
@@ -64,14 +66,10 @@ namespace AdventOfCode
                     int x = currentBeam.position.x + currentBeam.getDirection().Item2;
                     int y = currentBeam.position.y + currentBeam.getDirection().Item1;
                     currentBeam.position = new Point(x, y);
-                    // Add it to the queue again unless it's out of bounds
-                    if (x >= 0 && x < maxX && y >= 0 && y < maxY)
-                    {
-                        myQueue.Enqueue(currentBeam);
-                    }
+                    myQueue.Enqueue(currentBeam);
                 }
 
-                // if we stand on a splitter, remove this beam (make sure it's removed from the queue)
+                // if we stand on a splitter, remove this beam 
                 // and create one or two new beams
                 // One for /\, two for |-
                 // move the new splitter(s) one step
@@ -146,8 +144,11 @@ namespace AdventOfCode
                     }
                 }
             }
-
-            answer = visited.Count;
+            foreach(Point p in visited.Keys)
+            {
+                if (visited[p].Count > 0)
+                    answer++;
+            }
 
             System.Console.WriteLine("Answer part 1: " + answer);
         }
