@@ -8,24 +8,8 @@ namespace AdventOfCode
         public static void calculate()
         {
             string[] lines = System.IO.File.ReadLines("./../../../inputfiles/2023day16.txt").ToArray();
-
-            /* 
-             * Create a Splitter dictionary with info about all splitters. 
-             * Created a Visited dictionary where we store information from which direction each point has been visited,
-             * since we don't need to continue calculate if we've already been in a point from that direction before. 
-             * Answer for part 1 will be the number of keys in this dictionary. 
-             * Create a class Beam with position and direction. 
-             * Put all beams in a queue. 
-             * Create a while-loop which runs as long as there are active beams. 
-             */
-            Beam startBeam = new Beam();
-            startBeam.position = new Point(0, 0); // top left corner
-            startBeam.myDirection = Beam.Direction.Right;
+            // Create a Splitter dictionary with info about all splitters. 
             Dictionary<Point, char> splitters = new Dictionary<Point, char>();
-            Dictionary<Point, List<Beam.Direction>> visited = new Dictionary<Point, List<Beam.Direction>>();
-            int answer = 0;
-            var myQueue = new Queue<Beam>();
-            myQueue.Enqueue(startBeam);
             int maxX = lines[0].Length;
             int maxY = lines.Length;
             for (int y = 0; y < lines.Length; y++)
@@ -36,9 +20,83 @@ namespace AdventOfCode
                     {
                         splitters.Add(new Point(x, y), lines[y][x]);
                     }
+                }
+            }
+
+            // Part 1
+            Beam startBeam = new Beam();
+            startBeam.position = new Point(0, 0); // top left corner
+            startBeam.myDirection = Beam.Direction.Right;
+            int answer = Energize(startBeam, maxX, maxY, splitters);
+
+            // Part 2: do part 1 for all starting points and find the most efficient one
+            int answer2 = 0;
+            // Follow the left border
+            for(int y = 0; y < maxY; y++)
+            {
+                Beam startBeam2 = new Beam();
+                startBeam2.position = new Point(0, y);
+                startBeam2.myDirection = Beam.Direction.Right;
+                int tmp = Energize(startBeam2, maxX, maxY, splitters);
+                if (tmp > answer2)
+                    answer2 = tmp; 
+            }
+            // Follow the top border
+            for (int x = 0; x < maxX; x++)
+            {
+                Beam startBeam2 = new Beam();
+                startBeam2.position = new Point(x, 0);
+                startBeam2.myDirection = Beam.Direction.Down;
+                int tmp = Energize(startBeam2, maxX, maxY, splitters);
+                if (tmp > answer2)
+                    answer2 = tmp;
+            }
+            // Follow the bottom border
+            for (int x = 0; x < maxX; x++)
+            {
+                Beam startBeam2 = new Beam();
+                startBeam2.position = new Point(x, maxY-1);
+                startBeam2.myDirection = Beam.Direction.Up;
+                int tmp = Energize(startBeam2, maxX, maxY, splitters);
+                if (tmp > answer2)
+                    answer2 = tmp;
+            }
+            // Follow the right border
+            for (int y = 0; y < maxY; y++)
+            {
+                Beam startBeam2 = new Beam();
+                startBeam2.position = new Point(maxX-1, y);
+                startBeam2.myDirection = Beam.Direction.Left;
+                int tmp = Energize(startBeam2, maxX, maxY, splitters);
+                if (tmp > answer2)
+                    answer2 = tmp;
+            }
+
+            System.Console.WriteLine("Answer part 1: " + answer + ", and part 2: " + answer2);
+        }
+
+        /*
+         * Created a Visited dictionary where we store information from which direction each point has been visited,
+         * since we don't need to continue calculate if we've already been in a point from that direction before. 
+         * Answer for part 1 will be the number of keys in this dictionary. 
+         * Create a class Beam with position and direction. 
+         * Put all beams in a queue. 
+         * Create a while-loop which runs as long as there are active beams. 
+         */
+        public static int Energize(Beam startBeam, int maxX, int maxY, Dictionary<Point, char> splitters)
+        {
+            Dictionary<Point, List<Beam.Direction>> visited = new Dictionary<Point, List<Beam.Direction>>();
+            var myQueue = new Queue<Beam>();
+            myQueue.Enqueue(startBeam);
+
+            for (int y = 0; y < maxY; y++)
+            {
+                for (int x = 0; x < maxX; x++)
+                {
                     visited.Add(new Point(x, y), new List<Beam.Direction>());
                 }
             }
+
             while (myQueue.Count > 0)
             {
                 Beam currentBeam = myQueue.Dequeue();
@@ -144,14 +202,15 @@ namespace AdventOfCode
                     }
                 }
             }
-            foreach(Point p in visited.Keys)
+            int answer = 0;
+            foreach (Point p in visited.Keys)
             {
                 if (visited[p].Count > 0)
                     answer++;
             }
-
-            System.Console.WriteLine("Answer part 1: " + answer);
+            return answer;
         }
+
     }
 
     class Beam
