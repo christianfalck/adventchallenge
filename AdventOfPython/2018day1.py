@@ -2,9 +2,8 @@ import itertools
 
 # part 1
 start = 0
-numbers = [int(x) for x in open("C:\\Users\\falke\\Documents\\Projects\\adventchallenge\\2018\\2018day1.txt").readlines()]
-for number in numbers:
-    start += number
+numbers = [int(x) for x in open("C:\\Users\\falke\\Documents\\Projects\\adventchallenge\\AdventOfPython\\2018day1.txt").readlines()]
+start = sum(numbers)
 print(start)
 
 # part 2
