@@ -1,0 +1,61 @@
+from google.colab import files
+
+def parse_text_file(filename):
+    data = []
+    try:
+        with open(filename, 'r') as file:
+            for line in file:
+                parts = line.strip().split()
+                row_data = []
+                for part in parts:
+                    try:
+                        row_data.append(int(part))
+                    except ValueError:
+                        print(f"Skipping invalid value: '{part}' in line: {line.strip()}")
+                if row_data:
+                    data.append(row_data)
+    except FileNotFoundError:
+        print(f"Error: File '{filename}' not found.")
+    return data
+
+# Check if the row is strictly increasing or decreasing with 1-3 steps 
+def check_sequence(arr):
+    n = len(arr)
+    if n < 2:
+        return False  # A sequence with less than two elements cannot be strictly increasing or decreasing
+
+    increasing = True
+    decreasing = True
+
+    for i in range(n - 1):
+        diff = abs(arr[i+1] - arr[i])
+        if diff < 1 or diff > 3 :
+          increasing = False
+          decreasing = False
+          break
+        if arr[i+1] <= arr[i]:
+            increasing = False
+        if arr[i+1] >= arr[i]:
+            decreasing = False
+
+    if increasing:
+        return True
+    elif decreasing:
+        return True
+    else:
+        return False
+
+uploaded = files.upload()
+
+for filename in uploaded.keys():
+    print(f'User uploaded file "{filename}" with length {len(uploaded[filename])} bytes')
+    parsed_data = parse_text_file(filename)
+    if parsed_data:
+        print("Parsed data with ", len(parsed_data), " rows.")
+        count = 0
+        for row in parsed_data:
+          if check_sequence(row):
+            # print("safe: ", row)
+            count += 1
+        print("Number of safe rows: ", count)
+
