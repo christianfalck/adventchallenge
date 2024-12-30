@@ -1,3 +1,4 @@
+# Using https://colab.research.google.com/ as environment
 from google.colab import files
 
 def parse_text_file(filename):
@@ -38,3 +39,13 @@ for filename in uploaded.keys():
         print("First numbers (sorted):", first_nums)
         print("Second numbers (sorted):", second_nums)
         print("Total difference:", total_difference)
+
+# Part 2
+
+    if first_nums and second_nums:  # Check if the lists are not empty
+      results = 0
+      for i in range(len(first_nums)):
+          count = second_nums.count(first_nums[i])
+          #print("Row output: ", count, " times ", second_nums)
+          results += (first_nums[i] * count)
+      print("Results:", results)
