@@ -1,0 +1,40 @@
+from google.colab import files
+
+def parse_text_file(filename):
+    first_numbers = []
+    second_numbers = []
+    try:
+        with open(filename, 'r') as file:
+            for line in file:
+                parts = line.strip().split()  # Split the line by whitespace
+                if len(parts) == 2:
+                    try:
+                        first_numbers.append(int(parts[0]))
+                        second_numbers.append(int(parts[1]))
+                    except ValueError:
+                        print(f"Skipping line: {line.strip()} (Invalid numbers)")
+                else:
+                    print(f"Skipping line: {line.strip()} (Incorrect format)")
+    except FileNotFoundError:
+        print(f"Error: File '{filename}' not found.")
+
+    return first_numbers, second_numbers
+
+# Allow the user to browse for a file, ideally the input from day 1
+uploaded = files.upload()
+
+for filename in uploaded.keys():
+    print(f'User uploaded file "{filename}" with length {len(uploaded[filename])} bytes')
+    first_nums, second_nums = parse_text_file(filename)
+
+    if first_nums and second_nums:  # Check if the lists are not empty
+        first_nums.sort()
+        second_nums.sort()
+        
+        total_difference = 0
+        for i in range(min(len(first_nums), len(second_nums))):
+            total_difference += abs(first_nums[i] - second_nums[i])
+        
+        print("First numbers (sorted):", first_nums)
+        print("Second numbers (sorted):", second_nums)
+        print("Total difference:", total_difference)
