@@ -45,6 +45,15 @@ def check_sequence(arr):
     else:
         return False
 
+# for part 2 i found a nicer solution where I use the differences rather than comparing each step
+def check_sequence_part2(arr):
+  diffs = [arr[i + 1] - arr[i] for i in range(len(arr) - 1)]  
+  if (all(x < 0 and x in range(-3, 0) for x in diffs) or 
+      all(x > 0 and x in range(1, 4) for x in diffs)):    
+    return True
+  else:
+    return False
+
 uploaded = files.upload()
 
 for filename in uploaded.keys():
@@ -53,9 +62,17 @@ for filename in uploaded.keys():
     if parsed_data:
         print("Parsed data with ", len(parsed_data), " rows.")
         count = 0
+        count_part2 = 0
         for row in parsed_data:
           if check_sequence(row):
             # print("safe: ", row)
             count += 1
-        print("Number of safe rows: ", count)
+          else:
+            for i in range(len(row)):
+              temp_row = row.copy()
+              temp_row.pop(i)
+              if check_sequence_part2(temp_row):
+                count_part2 += 1 # how many extra that is passed due to removing one
+                break
+        print("Number of safe rows: ", count, " and for part 2 ", count+count_part2)
 
