@@ -1,0 +1,39 @@
+from google.colab import files
+import re
+
+def multiply(text):
+    sum_of_products = 0
+    pattern = r"mul\((\d+),(\d+)\)"
+    matches = re.findall(pattern, text)
+    for match in matches:
+        x = int(match[0])
+        y = int(match[1])
+        sum_of_products += x * y
+    return sum_of_products
+
+def conditional_multiply(text):
+    sum_of_products = 0
+    do_blocks = []
+    blocks = re.split(r"(do\(\)|don't\(\))", text)
+    in_do_block = True
+    for i in range(len(blocks)):
+      if blocks[i] == "do()":
+          in_do_block = True
+      elif blocks[i] == "don't()":
+          in_do_block = False
+      elif in_do_block:
+          pattern = r"mul\((\d+),(\d+)\)"
+          matches = re.findall(pattern, blocks[i])
+          for match in matches:
+              x = int(match[0])
+              y = int(match[1])
+              sum_of_products += x * y              
+    return sum_of_products
+
+uploaded = files.upload()
+
+for filename in uploaded.keys():
+  with open(filename, 'r') as file:
+    file_contents = file.read()
+    print ("Answer part 1: ", multiply(file_contents))
+    print ("Answer part 2: ", conditional_multiply(file_contents))
