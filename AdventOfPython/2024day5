@@ -1,0 +1,84 @@
+import io
+from google.colab import files
+
+def sort_list_by_rules(invalid_list, rules):
+    for i in range(len(invalid_list)):
+        for j in range(i + 1, len(invalid_list)):
+          for rule in rules:
+            try:
+              x_index = invalid_list.index(rule[0])
+              b_index = invalid_list.index(rule[1])
+              # switch place if they're not in order
+              if x_index > b_index:
+                  invalid_list[x_index], invalid_list[b_index] = invalid_list[b_index], invalid_list[x_index]
+                  break
+            except ValueError:
+              # Skip if rule's elements not in the current list
+              continue
+    return invalid_list
+
+def check_order(uploaded_file):
+        content = uploaded_file.read().decode('utf-8')
+        lines = content.strip().split('\n')
+        #find the empty row
+        separator_index = -1
+        for i, line in enumerate(lines):
+          if line.strip() == '':
+            separator_index = i
+            break
+        rules = []
+        for i in range(separator_index):
+          try:
+            parts = lines[i].strip().split('|')
+            if len(parts) != 2:
+              raise ValueError
+            rules.append((int(parts[0]), int(parts[1])))
+          except (ValueError, IndexError):
+            print(f"Invalid rule format at line {i + 1}: {lines[i]}")
+            return
+
+        lists_to_check = []
+        for i in range(separator_index + 1, len(lines)):
+            try:
+              current_list = [int(x) for x in lines[i].strip().split(',')]
+              lists_to_check.append(current_list)
+            except ValueError:
+              print(f"Invalid list format at line {i + 1}: {lines[i]}")
+              return
+
+        answerPartOne = 0
+        invalid_lists = []
+        answerPartTwo = 0
+        for current_list in lists_to_check:
+            valid_list = True
+            for rule in rules:
+                x_index = -1
+                b_index = -1
+                try:
+                    x_index = current_list.index(rule[0])
+                    b_index = current_list.index(rule[1])
+                except ValueError:
+                    # Skip if rule's elements not in the current list
+                    continue
+                if x_index > b_index:
+                    valid_list = False
+                    break
+            if valid_list:
+                # Calculate and add the middle element only for valid lists
+                list_len = len(current_list)
+                middle_index = list_len // 2
+                answerPartOne += current_list[middle_index]
+            else:
+                invalid_lists.append(current_list)
+
+        print("Sum of middle elements of valid lists:", answerPartOne)
+
+        #Sort the invalid lists based on all the rules
+        for invalid_list in invalid_lists:
+            sorted_list = sort_list_by_rules(invalid_list, rules)
+            answerPartTwo += sorted_list[len(sorted_list) // 2]
+        print("Sum of middle elements of sorted invalid lists:", answerPartTwo)
+
+uploaded = files.upload()
+for fn in uploaded.keys():
+  check_order(io.BytesIO(uploaded[fn]))
