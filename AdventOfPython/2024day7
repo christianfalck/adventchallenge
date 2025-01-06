@@ -1,4 +1,5 @@
 from google.colab import files
+import io
 
 def solve_equation(line):
     parts = line.split(":")
@@ -21,13 +22,44 @@ def solve_equation(line):
     return False, 0
 
 
+def solve_equation_part2(line):
+    parts = line.split(":")
+    total = int(parts[0])
+    params = [int(x) for x in parts[1].split()]
+    
+    import itertools
+    import operator
+
+    ops = [operator.mul, operator.add, operator.truediv]
+
+    for op_combo in itertools.product(ops, repeat=len(params) - 1):
+      result = params[0]
+      for i in range(len(params) - 1):
+        if op_combo[i] == operator.truediv:
+          result = int(str(result) + str(params[i + 1])) # abc || def = abcdef
+        else:
+          result = op_combo[i](result, params[i + 1])
+
+      if abs(result - total) < 1e-6:  # Using a small tolerance for floating-point comparison
+        return True, result 
+
+    return False, 0
+
 uploaded = files.upload()
 for fn in uploaded.keys():
   content = io.BytesIO(uploaded[fn]).read().decode('utf-8')
   lines = content.strip().split('\n')
 answerPart1 = 0
+answerPart2 = 0
 for line in lines:
   solved, total = solve_equation(line)
   if solved:
     answerPart1 += total
-print ("sum: ", answerPart1)
+  else: 
+    solved2, total2 = solve_equation_part2(line)
+    if solved2:
+      answerPart2 += total2
+answerPart2 += answerPart1
+
+print ("sum part 1: ", answerPart1)
+print ("sum part 2: ", answerPart2)
