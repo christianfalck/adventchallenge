@@ -1,0 +1,51 @@
+from google.colab import files
+
+uploaded = files.upload()
+
+def parse_file(file_content):
+    """Parses the uploaded file and stores character positions."""
+
+    char_positions = {}  # Dictionary to store character positions
+
+    for row_num, line in enumerate(file_content.splitlines()):
+        for col_num, char in enumerate(line):
+            if char != '.':
+                if char not in char_positions:
+                    char_positions[char] = []
+                char_positions[char].append((row_num, col_num))
+
+    return char_positions
+
+def calculate_antinodes(char_positions):
+  antinodes = set()
+  for char, positions in char_positions.items():
+     if len(positions) > 1:
+        for i in range(len(positions)):
+            for j in range(i+1, len(positions)):
+                x1, y1 = positions[i]
+                x2, y2 = positions[j]
+                dx = x2 - x1
+                dy = y2 - y1
+                
+                # Calculate antinode positions
+                antinode1 = (x1 - dx, y1 - dy)
+                antinode2 = (x2 + dx, y2 + dy)
+
+                # Antinodes outside borders are removed
+                if 0<=antinode1[0]<50 and 0<=antinode1[1]<50:
+                  antinodes.add(antinode1)
+                if 0<=antinode2[0]<50 and 0<=antinode2[1]<50:
+                  antinodes.add(antinode2)
+
+  return antinodes
+
+# Assuming 'uploaded' contains the file name as key and content as value
+for filename, content in uploaded.items():
+  try:
+    char_positions = parse_file(content.decode('utf-8'))
+    antinodes = calculate_antinodes(char_positions)
+
+    print(f"Answer part 1: ", len(antinodes))
+
+  except Exception as e:
+    print(f"An error occurred while processing the file {filename}: {e}")
