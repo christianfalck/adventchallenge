@@ -1,0 +1,80 @@
+import io
+from google.colab import files
+
+class Ship:
+    def __init__(self, x=0, y=0, direction=0):
+        self.direction = direction  # 0: right, 1: down, 2: left, 3: up
+        self.x = x
+        self.y = y
+        self.visited = [(x, y)]
+
+    def move(self):
+        if self.direction == 0:
+            self.x += 1
+        elif self.direction == 1:
+            self.y += 1
+        elif self.direction == 2:
+            self.x -= 1
+        elif self.direction == 3:
+            self.y -= 1
+        self.visited.append((self.x, self.y))
+
+    def getNextLocation(self):
+        if self.direction == 0:
+            return (self.x + 1, self.y)
+        elif self.direction == 1:
+            return (self.x, self.y + 1)
+        elif self.direction == 2:
+            return (self.x - 1, self.y)
+        elif self.direction == 3:
+            return (self.x, self.y - 1)
+
+    def turn_right(self):
+        self.direction = (self.direction + 1) % 4
+
+    def getLocation(self):
+        return (self.x, self.y)
+
+    def getDirection(self):
+        return self.direction
+
+    def getVisited(self):
+        return self.visited
+
+def start_game(uploaded_file):
+    content = uploaded_file.read().decode('utf-8')
+    lines = content.strip().split('\n')
+    maxY = len(lines)
+    maxX = len(lines[0])
+
+    # Create a set to store the coordinates of '#' characters.
+    objects = set()
+    
+    # Iterate through the lines and populate the objects set.
+    for y, line in enumerate(lines):
+        for x, char in enumerate(line):
+            if char == '#':
+                objects.add((x, y))
+    
+    # Now you can easily check if a coordinate has an object:
+    def has_object(x, y):
+      return (x, y) in objects
+
+    #Find start position of the ship
+    for y, line in enumerate(lines):
+      for x, char in enumerate(line):
+        if char == '^':
+          ship = Ship(x=x, y=y, direction=3)
+    
+    while(ship.getNextLocation()[0] >= 0 and ship.getNextLocation()[1] >= 0 and ship.getNextLocation()[0] < maxX and ship.getNextLocation()[1] < maxY):
+      if has_object(ship.getNextLocation()[0], ship.getNextLocation()[1]):
+          ship.turn_right()
+      else:
+          ship.move()
+
+    # set returns the unique coordinates and will eliminate duplicates
+    print("The ship visited this number of places: ", len(set(ship.getVisited())))
+
+uploaded = files.upload()
+for fn in uploaded.keys():
+  start_game(io.BytesIO(uploaded[fn]))
