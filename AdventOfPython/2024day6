@@ -6,7 +6,7 @@ class Ship:
         self.direction = direction  # 0: right, 1: down, 2: left, 3: up
         self.x = x
         self.y = y
-        self.visited = [(x, y)]
+        self.visited = {} #using a dictionary instead to check the direction of each visited node
 
     def move(self):
         if self.direction == 0:
@@ -17,7 +17,7 @@ class Ship:
             self.x -= 1
         elif self.direction == 3:
             self.y -= 1
-        self.visited.append((self.x, self.y))
+        self.visited[(self.x, self.y)] = self.direction
 
     def getNextLocation(self):
         if self.direction == 0:
@@ -41,11 +41,20 @@ class Ship:
     def getVisited(self):
         return self.visited
 
+    def visited_locations(self):
+        return list(self.visited.keys())
+    
+    def have_i_been_here_before(self, x, y):
+        return (x, y) in self.visited and self.visited[(x, y)] == self.direction
+
+
 def start_game(uploaded_file):
     content = uploaded_file.read().decode('utf-8')
     lines = content.strip().split('\n')
     maxY = len(lines)
     maxX = len(lines[0])
+    startX = 0
+    startY = 0
 
     # Create a set to store the coordinates of '#' characters.
     objects = set()
@@ -65,6 +74,8 @@ def start_game(uploaded_file):
       for x, char in enumerate(line):
         if char == '^':
           ship = Ship(x=x, y=y, direction=3)
+          startX = x
+          startY = y
     
     while(ship.getNextLocation()[0] >= 0 and ship.getNextLocation()[1] >= 0 and ship.getNextLocation()[0] < maxX and ship.getNextLocation()[1] < maxY):
       if has_object(ship.getNextLocation()[0], ship.getNextLocation()[1]):
@@ -74,6 +85,43 @@ def start_game(uploaded_file):
 
     # set returns the unique coordinates and will eliminate duplicates
     print("The ship visited this number of places: ", len(set(ship.getVisited())))
+
+    #Over to part 2: Let's put an object in each location and see if that results in a loop. 
+    number_of_loops = 0
+    for obj_x in range(maxX):
+      for obj_y in range(maxY):
+          # Only needs to test the coordinates that will be visited default
+          if not (obj_x, obj_y) in ship.visited_locations():
+            continue
+          # Create a temporary copy of the objects set, including the test object
+          temp_objects = objects.copy()
+          if (obj_x, obj_y) in objects:
+            # This object already exist
+            continue
+          else:
+            temp_objects.add((obj_x, obj_y))
+
+          # Create a new ship instance for each test
+          test_ship = Ship(x=startX, y=startY, direction=3)
+
+          # Helper function to check for objects in the temporary set
+          def has_temp_object(x, y):
+              return (x, y) in temp_objects
+
+          # Simulate the ship's movement with the temporary object set
+          while (0 <= test_ship.getNextLocation()[0] < maxX and 
+                  0 <= test_ship.getNextLocation()[1] < maxY):
+              if has_temp_object(test_ship.getNextLocation()[0], test_ship.getNextLocation()[1]):
+                  test_ship.turn_right()
+              else:
+                  test_ship.move()
+
+              next_x, next_y = test_ship.getNextLocation()
+              if test_ship.have_i_been_here_before(next_x, next_y):
+                  number_of_loops += 1
+                  break  # Exit the inner loop if a loop is found
+
+    print("Number of potential loops: ", number_of_loops)
 
 uploaded = files.upload()
 for fn in uploaded.keys():
