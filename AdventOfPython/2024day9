@@ -1,0 +1,120 @@
+import io
+from google.colab import files
+import copy
+import sys
+
+def parse_positions(file_content):
+
+    try:
+        line = file_content.decode('utf-8').strip()
+        position = 0
+        id = 0
+        empty = set() # storing all positions where we have empty space
+        files = {} # dictionary of files with ID as key and positions of the files
+        isEmpty = False
+
+        for count in line:
+          number = int(count)
+          if isEmpty:
+            # empty spaces
+            startPosition = position
+            for _ in range(number):
+              empty.add(position)
+              position+=1
+          else:
+            # value
+            files[id] = []
+            for _ in range(number):
+              files[id].append(position)
+              position+=1
+            id+=1
+          isEmpty = not isEmpty
+        return empty,files
+    except (ValueError, UnicodeDecodeError):  # Handle potential errors
+        print("Error parsing file. Please ensure the file format is correct.")
+        return []
+
+def moveFiles(empty, files):
+    sorted_files = sorted(files.items(), reverse=True) # Sort files by ID in descending order
+    empty_list = sorted(list(empty)) #convert set to sorted list
+    for file_id, positions in sorted_files:
+        for i in range(len(positions) - 1, -1, -1): # Iterate backward so we move the highest number first
+            if len(empty_list) > 0:
+              emptyValue = empty_list.pop(0)
+              if files[file_id][i] > emptyValue: #no need to move if we're already below
+                files[file_id][i] = emptyValue #replace with lowest empty position
+    return files
+
+def moveFileblocks(file_content):
+    line = file_content.decode('utf-8').strip()
+    # store data and empty space on disk
+    disk = []
+    for i in range(len(line)):
+      blockSize = int(line[i])
+      if i%2==0:
+          disk.append((i//2, blockSize)) # i//2 is ID for data block
+      else:
+          disk.append((-1,blockSize)) # storing empty spaces with ID -1
+    # move the file blocks, starting from right (the higest ID)
+    i = len(disk)-1
+    while i>0:
+        id,size = disk[i]
+        if id==-1:
+            #empty space, don't move
+            i-=1
+            continue
+        # Find the first potential empty space to move this data block
+        locationOfEmptySpace = -1
+        for j in range(i):
+            id_x,size_x = disk[j]
+            if id_x==-1 and size_x>=size: # found an empty space large enough
+                locationOfEmptySpace = j
+                break
+        if locationOfEmptySpace==-1: # there is no empty space large enough
+            i-=1
+            continue
+        _,size_empty = disk[locationOfEmptySpace] # another variable but size_empty is still size of the empty space
+        # Update the disk:
+        # Up until the empty space is intact
+        # Move the last file to this location
+        # Update size of empty space (if data filled whole space, size will be 0)
+        # Everything between the empty space and the file is intact
+        # Add an empty space where the file used to be
+        # Everything after where the file was is intact
+        disk = disk[:locationOfEmptySpace]+[(id,size), (-1, size_empty-size)]+disk[locationOfEmptySpace+1:i]+[(-1,size)]+disk[i+1:]
+    return disk
+
+def calculateChecksum(files):
+    checksum = 0
+    print("files: ", files)
+    for file_id, positions in files.items():
+        for position in positions:
+            checksum += position * file_id
+    return checksum
+
+def calculateCheckSum2(disk):
+    checksum = 0
+    position = 0
+    for block in disk:
+        id,size = block
+        if id ==-1: # empty space
+            position+=size
+            continue
+        for i in range(size): # add checksum for each part of file
+            checksum+= position*id
+            position+=1
+    return checksum
+
+uploaded = files.upload()
+file_name = list(uploaded.keys())[0]
+file_content = uploaded[file_name]
+
+empty,files = parse_positions(file_content)
+movedFiles = moveFiles(empty, files)
+answerPart1 = calculateChecksum(movedFiles)
+print("answer part 1: ", answerPart1)
+
+movedFileBlocks = moveFileblocks(file_content)
+answerPart2 = calculateCheckSum2(movedFileBlocks)
+print("answer part 2: ", answerPart2)
+
