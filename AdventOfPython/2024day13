@@ -1,0 +1,64 @@
+import re
+from google.colab import files
+import numpy as np
+
+def parse_input(filepath):
+  try:
+    with open(filepath, 'r') as f:
+      content = f.read()
+  except FileNotFoundError:
+    print(f"Error: File not found at {filepath}")
+    return []
+  results = []
+  # Regular expression to match lines
+  pattern = r"Button A: X\+(\d+), Y\+(\d+)\nButton B: X\+(\d+), Y\+(\d+)\nPrize: X=(\d+), Y=(\d+)"
+  matches = re.findall(pattern, content)
+  for match in matches:
+    try:
+        results.append({
+            "ButtonA_X": int(match[0]),
+            "ButtonA_Y": int(match[1]),
+            "ButtonB_X": int(match[2]),
+            "ButtonB_Y": int(match[3]),
+            "Prize_X": int(match[4]),
+            "Prize_Y": int(match[5]),
+        })
+    except (ValueError, IndexError):
+      print(f"Error parsing a line in the file: {match}")
+      continue #skip the current iteration and continue to next match
+  return results
+
+def solve_for_buttons(data_point):
+    ax = data_point["ButtonA_X"]
+    ay = data_point["ButtonA_Y"]
+    bx = data_point["ButtonB_X"]
+    by = data_point["ButtonB_Y"]
+    xtot = data_point["Prize_X"]
+    ytot = data_point["Prize_Y"]
+
+    # ax + bx = xtot
+    # ay + by = ytot
+    # Now we can eliminate one unknown
+    # by * (ax + bx) = by * xtot
+    # bx * (ay + by) = bx * ytot
+    # by * (ax + bx) - bx * (ay + by) = by * xtot - bx * ytot
+    # by*ax - bx*ay = by * xtot - bx * ytot
+    # 
+    A = ( xtot * by - ytot * bx)/(by*ax -bx*ay )
+    B = (xtot - A * ax)/bx
+    if np.isclose(A, np.round(A)) and np.isclose(B, np.round(B)):
+      return int(A), int(B)
+    else: 
+      return 0,0
+
+uploaded = files.upload()
+filepath = next(iter(uploaded))
+parsed_data = parse_input(filepath)
+
+if parsed_data:
+    cost = 0
+    for data_point in parsed_data:
+      button_a_count, button_b_count = solve_for_buttons(data_point)
+      #print(f"Button A presses: {button_a_count}, Button B presses: {button_b_count}")
+      cost += button_a_count * 3 + button_b_count
+    print("Total cost: ", cost)
