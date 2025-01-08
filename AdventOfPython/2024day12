@@ -1,0 +1,75 @@
+from google.colab import files
+import io
+
+uploaded = files.upload()
+
+def calculateSize(matrix, x, y, visitedMap):
+  area,perimeter = 1,0 #we add this plot to the region area
+  visitedMap[x][y] = 1
+  # Look at all 4 neighbours:
+  # Out of bounds: Do nothing.
+  # Another crop: Add to perimeter
+  # Same crop, not visited before, recursive call.
+  # Same crop, visited before: Skip
+  if x-1 < 0:
+    perimeter += 1
+  else:
+    if matrix[x-1][y] != matrix[x][y]:
+      perimeter += 1
+    elif visitedMap[x-1][y] == 0:
+      tmpArea,tmpPerimeter = calculateSize(matrix,x-1,y,visitedMap)
+      area += tmpArea
+      perimeter += tmpPerimeter
+  if x+1 == len(matrix):
+    perimeter += 1
+  else:
+    if matrix[x+1][y] != matrix[x][y]:
+      perimeter += 1
+    elif visitedMap[x+1][y] == 0:
+      tmpArea,tmpPerimeter = calculateSize(matrix,x+1,y,visitedMap)
+      area += tmpArea
+      perimeter += tmpPerimeter
+  if y-1 < 0:
+    perimeter += 1
+  else:
+    if matrix[x][y-1] != matrix[x][y]:
+      perimeter += 1
+    elif visitedMap[x][y-1] == 0:
+      tmpArea,tmpPerimeter = calculateSize(matrix,x,y-1,visitedMap)
+      area += tmpArea
+      perimeter += tmpPerimeter
+  if y+1 == len(matrix[0]):
+    perimeter += 1
+  else:
+    if matrix[x][y+1] != matrix[x][y]:
+      perimeter += 1
+    elif visitedMap[x][y+1] == 0:
+      tmpArea,tmpPerimeter = calculateSize(matrix,x,y+1,visitedMap)
+      area += tmpArea
+      perimeter += tmpPerimeter
+  return area,perimeter
+
+def calculatePrice(matrix):
+  # Go through the matrix row by row, one column at the time.
+  # When we find a cell that haven't been visited before,
+  # we check through all it's neighbours recursively to find an area.
+  # For each area, calculate the price
+  visitedMap = [[0 for _ in range(len(matrix[0]))] for _ in range(len(matrix))]
+  total_price = 0
+  for i in range(len(matrix)):
+    for j in range(len(matrix[0])):
+      if visitedMap[i][j] == 0:
+        size = calculateSize(matrix,i,j,visitedMap)
+        total_price += size[0]*size[1]
+  return total_price
+
+
+file_name = next(iter(uploaded))
+with io.BytesIO(uploaded[file_name]) as file:
+  lines = file.read().decode('utf-8').splitlines()
+  matrix = []
+  for line in lines:
+      row = list(line)
+      matrix.append(row)
+answerPart1 = calculatePrice(matrix)
+print("Answer: ", answerPart1)
