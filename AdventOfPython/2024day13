@@ -51,14 +51,32 @@ def solve_for_buttons(data_point):
     else: 
       return 0,0
 
+# I misread, it's actually a lot more than a million
+def solve_for_buttons_and_a_million(data_point):
+    ax = data_point["ButtonA_X"]
+    ay = data_point["ButtonA_Y"]
+    bx = data_point["ButtonB_X"]
+    by = data_point["ButtonB_Y"]
+    xtot = data_point["Prize_X"] + 10000000000000
+    ytot = data_point["Prize_Y"] + 10000000000000
+    A = ( xtot * by - ytot * bx)/(by*ax -bx*ay )
+    B = (xtot - A * ax)/bx
+    if (A - int(A)) == 0 and (B - int(B)) == 0: # the np.round didn't work here
+      return int(A), int(B)
+    else: 
+      return 0,0
+
 uploaded = files.upload()
 filepath = next(iter(uploaded))
 parsed_data = parse_input(filepath)
 
 if parsed_data:
     cost = 0
+    cost2 = 0
     for data_point in parsed_data:
       button_a_count, button_b_count = solve_for_buttons(data_point)
-      #print(f"Button A presses: {button_a_count}, Button B presses: {button_b_count}")
+      button_a_count_million, button_b_count_million = solve_for_buttons_and_a_million(data_point)
       cost += button_a_count * 3 + button_b_count
+      cost2 += button_a_count_million * 3 + button_b_count_million
     print("Total cost: ", cost)
+    print("Total cost for the million claws: ", cost2)
