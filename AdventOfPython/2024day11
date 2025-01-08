@@ -13,7 +13,6 @@ def blink(stones):
         new_stones.append(1)
       elif len(stone_str) % 2 == 0:
         # divide the stone in two
-        stone_str = str(stone)
         midpoint = len(stone_str) // 2
         new_stones.append(int(stone_str[:midpoint]))
         new_stones.append(int(stone_str[midpoint:]))
@@ -21,6 +20,48 @@ def blink(stones):
         new_stones.append(stone * 2024)
     stones = new_stones
   return len(stones)
+
+def blinkALot(startStones):
+  stones = {}
+  # put initial stones in dictionary 
+  # since we'll have a lot of 0 -> 1 -> 2024 -> 20 24 -> 2 0 2 4 etc 
+  # we'll store the number of each value rather than the values
+  for stone in startStones:
+    stones[stone] = 1
+  for i in range(75):  
+    totalNumber = 0
+    new_stones = {}
+    for stone in stones:
+      stone_str = str(stone)
+      if stone == 0:
+          if 1 in new_stones:
+            new_stones[1] += stones[stone]
+          else:
+            new_stones[1] = stones[stone]
+      elif len(stone_str) % 2 == 0:
+        # divide the stone in two
+        midpoint = len(stone_str) // 2
+        first = int(stone_str[:midpoint])
+        second = int(stone_str[midpoint:])
+        if first in new_stones:
+          new_stones[first] += stones[stone]
+        else:
+          new_stones[first] = stones[stone]
+        if second in new_stones:
+          new_stones[second] += stones[stone]
+        else:
+          new_stones[second] = stones[stone]
+      else:
+        newStone = stone * 2024
+        if newStone in new_stones:
+          new_stones[newStone] += stones[stone]
+        else:
+          new_stones[newStone] = stones[stone]
+    stones = new_stones
+  totalNumber = 0
+  for stone in stones:
+    totalNumber += stones[stone]
+  return totalNumber
 
 file_name = next(iter(uploaded))
 
@@ -30,3 +71,5 @@ with io.BytesIO(uploaded[file_name]) as file:
   
   answerPart1 = blink(numbers)
   print("Answer: ", answerPart1)
+  answerPart2 = blinkALot(numbers)
+  print("Answer: ", answerPart2)
