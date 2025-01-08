@@ -1,0 +1,81 @@
+from google.colab import files
+
+uploaded = files.upload()
+
+# make sure we only find each 9 once
+def find_path(matrix):
+    
+    rows, cols = len(matrix), len(matrix[0])
+    totalTrailheads = 0
+    
+    for i in range(rows):
+      for j in range(cols):
+        if(matrix[i][j] == 0):
+          #potential start of path
+          queue = [(i, j, [])]
+          visited = set()
+          paths = set()
+          while queue:
+              row, col, path = queue.pop(0)
+
+              if (row, col) in visited:
+                  continue
+
+              visited.add((row, col))
+              path = path + [(row, col)]
+
+              if matrix[row][col] == 9:
+                  paths.add(tuple(path))
+
+              for dr, dc in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
+                  new_row, new_col = row + dr, col + dc
+                  if 0 <= new_row < rows and 0 <= new_col < cols and matrix[new_row][new_col] == matrix[row][col] + 1:
+                      queue.append((new_row, new_col, path.copy()))
+          totalTrailheads += len(paths)
+
+    return totalTrailheads
+
+#just go all paths 
+def find_paths(matrix):
+    
+    rows, cols = len(matrix), len(matrix[0])
+    totalTrailheads = 0
+    
+    for i in range(rows):
+      for j in range(cols):
+        if(matrix[i][j] == 0):
+          #potential start of path
+          queue = [(i, j, [])]
+          while queue:
+              row, col, path = queue.pop(0)
+              path = path + [(row, col)]
+
+              if matrix[row][col] == 9:
+                  totalTrailheads += 1
+
+              for dr, dc in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
+                  new_row, new_col = row + dr, col + dc
+                  if 0 <= new_row < rows and 0 <= new_col < cols and matrix[new_row][new_col] == matrix[row][col] + 1:
+                      queue.append((new_row, new_col, path.copy()))
+
+    return totalTrailheads
+
+input_data = []
+for fn in uploaded.keys():
+    print('User uploaded file "{name}" with length {length} bytes'.format(
+        name=fn, length=len(uploaded[fn])))
+    
+    try:
+        with open(fn, 'r') as f:
+            for line in f:
+                input_data.append(list(map(int, list(line.strip()))))
+        
+        answerPart1 = find_path(input_data);
+        print(answerPart1)
+        answerPart2 = find_paths(input_data);
+        print(answerPart2)
+
+    except ValueError:
+        print("Error parsing file. Please upload a file with numbers separated by spaces.")
+    except Exception as e:
+        print(f"An error occurred: {e}")
