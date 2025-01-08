@@ -1,0 +1,32 @@
+from google.colab import files
+import io
+
+uploaded = files.upload()
+
+def blink(stones):
+  #print("Stones: ", stones)
+  for i in range(25):
+    new_stones = []
+    for stone in stones:
+      stone_str = str(stone)
+      if stone == 0:
+        new_stones.append(1)
+      elif len(stone_str) % 2 == 0:
+        # divide the stone in two
+        stone_str = str(stone)
+        midpoint = len(stone_str) // 2
+        new_stones.append(int(stone_str[:midpoint]))
+        new_stones.append(int(stone_str[midpoint:]))
+      else:
+        new_stones.append(stone * 2024)
+    stones = new_stones
+  return len(stones)
+
+file_name = next(iter(uploaded))
+
+with io.BytesIO(uploaded[file_name]) as file:
+  numbers_str = file.read().decode('utf-8')
+  numbers = [int(num) for num in numbers_str.split()]
+  
+  answerPart1 = blink(numbers)
+  print("Answer: ", answerPart1)
