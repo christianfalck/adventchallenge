@@ -1,0 +1,73 @@
+from google.colab import files
+
+def move_robot(p_x, p_y, v_x, v_y, steps=1):
+    width = 101
+    height = 103
+    new_x = (p_x + steps * v_x) % width
+    new_y = (p_y + steps * v_y) % height
+    return new_x, new_y
+
+def calculate_safety_score(robots):
+    safety_score = 1
+    width = 101
+    height = 103
+    a,b,c,d=0,0,0,0
+    for robot in robots:
+        p_x, p_y, v_x, v_y = robot
+        if p_x < (width-1)/2 and p_y < (height-1)/2:
+            a+=1 #quadrant 1
+        elif p_x > (width-1)/2 and p_y < (height-1)/2:
+            b+=1 #quadrant 2
+        elif p_x > (width-1)/2 and p_y > (height-1)/2:
+            c+=1 #quadrant 3
+        elif p_x < (width-1)/2 and p_y > (height-1)/2:
+            d+=1 #quadrant 4
+    return a*b*c*d
+
+uploaded = files.upload()
+answerPart1 = 0
+
+for fn in uploaded.keys():
+  print('User uploaded file "{name}" with length {length} bytes'.format(
+      name=fn, length=len(uploaded[fn])))
+   
+  robots = []
+  with open(fn, 'r') as f:
+    for line in f:
+      line = line.strip()
+      parts = line.split(' ') # Split by space
+      if len(parts) != 2:
+          print(f"Skipping invalid line: {line}")
+          continue
+
+      p_part, v_part = parts[0], parts[1]
+
+      p_x, p_y = map(int, p_part.split('=')[1].split(','))
+      v_x, v_y = map(int, v_part.split('=')[1].split(','))
+      robots.append([p_x, p_y, v_x, v_y])
+
+    for step in range(10000):  # Simulate 100 steps
+      grid = [['.' for _ in range(101)] for _ in range(103)]  # Initialize an empty grid
+      if step == 100: 
+        answerPart1 = calculate_safety_score(robots)
+      for i, robot in enumerate(robots):
+          robot[0], robot[1] = move_robot(robot[0], robot[1], robot[2], robot[3])
+          # Mark robot position on the grid
+          grid[robot[1]][robot[0]] = 'X'
+      # Since the lowest security score
+      # and a weird pattern with many on the same row show up after 51 steps
+      # and since we have height 103 = they will converge every 103 steps
+      # I'll print the grid for every step here. 
+      
+      # This is how I found the tree
+      #if(step%103==51):
+      #  print(step+1)
+      #  for row in grid:
+      #      print(''.join(row))
+      if(step == 6643): # have to subtract 1 to get theps 
+        print(step+1)
+        for row in grid:
+            print(''.join(row))
+
+print("Answer part 1: ", answerPart1)  
+print("Answer part 2: ", 6644)  
