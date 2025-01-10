@@ -5,46 +5,25 @@ def move_robot(crates,obstacles,direction,x,y):
     #if there is an obstacle, return false
     #if there is a crate in that direction, call move_crate
     #otherwise move one step
+    new_x = x
+    new_y = y
     if direction == '<':
-        if (x-1, y) in obstacles:
-            return x,y #can't move due to obstacle in the way
-        if (x-1, y) in crates:
-            if move_crate(crates,obstacles,x-1, y, direction):
-                return x-1,y # move with crate(s)
-            else: 
-                return x,y #can't move since the crate is blocked
-        else:
-            return x-1,y # moved
+      new_x = x - 1
     elif direction == '^':
-        if (x, y-1) in obstacles:
-            return x,y
-        if (x, y-1) in crates:
-            if move_crate(crates,obstacles,x, y-1,direction):
-                return x,y-1
-            else:
-                return x,y
-        else:
-            return x,y-1 
+      new_y = y - 1
     elif direction == '>':
-        if (x+1, y) in obstacles:
-            return x,y
-        if (x+1, y) in crates:
-            if move_crate(crates,obstacles,x+1, y,direction):
-                return x+1,y
-            else: 
-                return x,y
-        else:
-            return x+1,y
+      new_x = x + 1
     elif direction == 'v':
-        if (x, y+1) in obstacles:
-            return x,y
-        if (x, y+1) in crates:
-            if move_crate(crates,obstacles,x, y+1,direction):
-                return x,y+1
-            else:
-                return x,y
-        else:
-            return x,y+1
+      new_y = y + 1
+    
+    if (new_x, new_y) in obstacles:
+      return x,y #can't move due to obstacle in the way
+    if (new_x, new_y) in crates:
+      if move_crate(crates,obstacles,new_x, new_y, direction):
+        return new_x, new_y # move with crate(s)
+      else: 
+        return x,y #can't move since the crate is blocked
+    return new_x, new_y # moved
 
 def move_crate(crates,obstacles,x,y,direction):
     #if there is another crate in that direction, 
@@ -53,54 +32,27 @@ def move_crate(crates,obstacles,x,y,direction):
     # if there is an obstacle, return false
     # else move and return true
     #print("Moving crate from", (x, y), " using ", direction)
+    new_x = x
+    new_y = y
     if direction == '<':
-        if (x-1, y) in obstacles:
-            return False #can't move due to obstacle in the way
-        if (x-1, y) in crates:
-            if move_crate(crates,obstacles,x-1, y, direction):
-                crates[(x-1, y)] = crates.pop((x, y))
-                return True # move with crate(s)
-            else:
-                return False #can't move since the crate is blocked
-        else:
-            crates[(x-1, y)] = crates.pop((x, y))
-            return True
+      new_x = x - 1
     elif direction == '^':
-        if (x, y-1) in obstacles:
-            return False
-        if (x, y-1) in crates:
-            if move_crate(crates,obstacles,x, y-1,direction):
-                crates[(x, y-1)] = crates.pop((x, y))
-                return True
-            else: 
-                return False
-        else:
-            crates[(x, y-1)] = crates.pop((x, y))
-            return True
+      new_y = y - 1
     elif direction == '>':
-        if (x+1, y) in obstacles:
-            return False
-        if (x+1, y) in crates:
-            if move_crate(crates,obstacles,x+1, y,direction):
-                crates[(x+1, y)] = crates.pop((x, y))
-                return True
-            else: 
-                return False
-        else:
-            crates[(x+1, y)] = crates.pop((x, y))
-            return True
+      new_x = x + 1
     elif direction == 'v':
-        if (x, y+1) in obstacles:
-            return False
-        if (x, y+1) in crates:
-            if move_crate(crates,obstacles,x, y+1,direction):
-                crates[(x, y+1)] = crates.pop((x, y))
-                return True
-            else:
-                return False
-        else:
-            crates[(x, y+1)] = crates.pop((x, y))
-            return True
+      new_y = y + 1
+    
+    if (new_x, new_y) in obstacles:
+      return False #can't move due to obstacle in the way
+    if (new_x, new_y) in crates:
+      if move_crate(crates,obstacles,new_x, new_y, direction):
+        crates[(new_x, new_y)] = crates.pop((x, y))
+        return True # move with crate(s)
+      else:
+        return False #can't move since the crate is blocked
+    crates[(new_x, new_y)] = crates.pop((x, y))
+    return True
 
 def play(steps,crates,obstacles,x,y):
     for step in steps:
