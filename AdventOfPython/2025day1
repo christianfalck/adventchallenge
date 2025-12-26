@@ -1,0 +1,61 @@
+from google.colab import files
+
+def parse_and_process_commands(filename):
+    current_value = 50  # Start value
+    processed_values = [] # Every step
+    answer2 = 0
+
+    try:
+        with open(filename, 'r') as file:
+            for line in file:
+                line = line.strip()
+                if not line:
+                    continue  # Skip empty lines
+
+                command_type = line[0]
+                try:
+                    number = int(line[1:])
+                except ValueError:
+                    print(f"Skip weird input: {line} (Wrong number format)")
+                    continue
+
+                if command_type == 'L':
+                    temp_value = current_value - number
+                    # This is to handle all negative loops
+                    answer2 += int(abs(temp_value / 100))
+                    # When we subtract, we add 1 if we pass the 0: 
+                    # We shouldn't add a value if we start at 0
+                    if temp_value < 0 and current_value != 0:
+                        answer2 += 1
+                    elif temp_value == 0:
+                        answer2 += 1
+                    current_value = temp_value % 100
+
+                elif command_type == 'R':
+                    temp_value = current_value + number
+                    answer2 += int(abs(temp_value / 100))
+                    current_value = temp_value % 100
+
+                else:
+                    print(f"Skip wrong command: {line}")
+                print(answer2)
+                processed_values.append(current_value)
+
+    except FileNotFoundError:
+        print(f"Fel: The file '{filename}' couldn't be found.")
+    return answer2, processed_values
+
+# Upload file
+uploaded = files.upload()
+
+for filename in uploaded.keys():
+    answer2, intermediate_values = parse_and_process_commands(filename)
+
+    if intermediate_values:
+      answer1 = 0
+      for each_value in intermediate_values:
+        if each_value == 0:
+          answer1 += 1
+      print("First answer:", answer1, " and second answer: ", answer2)
+    else:
+        print("No steps were taken.")
