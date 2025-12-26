@@ -1,0 +1,43 @@
+def check_halves(num_str):
+    length = len(num_str)
+    part1 = 0
+    if length == 0:
+        return 0,0
+    # Part 1: If first half == second half then add the number
+    if length % 2 == 0:
+        if num_str[:length // 2] == num_str[length // 2:]:
+            part1 = num_str    
+    # For part2: Iterate through all possible pattern lengths
+    for pattern_len in range(1, int(length / 2) + 1):
+        if length % pattern_len == 0:
+            pattern = num_str[:pattern_len]
+            # Check if repeating this pattern forms the original string
+            if pattern * (length // pattern_len) == num_str:
+                return int(part1),int(num_str) 
+    return 0,0 # No repeating pattern found
+
+answer1 = 0
+answer2 = 0
+from google.colab import files
+uploaded = files.upload()
+for filename in uploaded.keys():
+  with open(filename, 'r') as file:
+        for line in file:
+            line = line.strip()
+            if not line:
+                continue
+            ranges = line.split(',')
+            for r_str in ranges:
+                try:
+                    start_str, end_str = r_str.split('-')
+                    start = int(start_str)
+                    end = int(end_str)
+
+                    for num in range(start, end + 1):
+                        first,second = check_halves(str(num))
+                        answer1+=first
+                        answer2+=second
+                except ValueError:
+                    print(f"Skipping invalid range format: {r_str} in line '{line}'")
+
+print(f"Answers: {answer1} and {answer2}")
