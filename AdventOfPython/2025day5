@@ -1,0 +1,57 @@
+from google.colab import files
+uploaded = files.upload()
+
+# For part 1: Check if a number is in any range
+def is_in_any_range(number, ranges):
+    for start, end in ranges:
+        if start <= number <= end:
+            return True
+    return False
+
+# For part 2: Merge ranges
+def merge_ranges(ranges):
+    ranges.sort(key=lambda x: x[0])
+    merged_ranges = []
+    for current_start, current_end in ranges:
+        if not merged_ranges or current_start > merged_ranges[-1][1]:
+            # Just add first range, and any range that doesn't overlap with previous
+            merged_ranges.append([current_start, current_end])
+        else:
+            # There is an overlap, merge ranges
+            merged_ranges[-1][1] = max(merged_ranges[-1][1], current_end)
+    
+    # Convert merged_ranges back to a list of tuples
+    merged_ranges = [tuple(r) for r in merged_ranges]
+    return merged_ranges
+
+for filename in uploaded.keys():
+  with open(filename, 'r') as file:
+      ranges_list = []
+      numbers_list = []
+      is_range_section = True
+      for line in file:
+          line = line.strip()
+          if not line:
+              # Empty line separates the two sections
+              is_range_section = False
+              continue
+          if is_range_section:
+              start_str, end_str = line.split('-')
+              ranges_list.append((int(start_str), int(end_str)))
+          else:
+              numbers_list.append(int(line))
+
+      Answer1 = 0
+
+      for number in numbers_list:
+          if is_in_any_range(number, ranges_list):
+              Answer1 += 1
+
+      print(f"Answer 1: {Answer1}")
+
+      merged_ranges = merge_ranges(ranges_list)
+      Answer2 = 0
+      for start, end in merged_ranges:
+          Answer2 += (end - start + 1)
+
+      print(f"Answer 2: {Answer2}")
