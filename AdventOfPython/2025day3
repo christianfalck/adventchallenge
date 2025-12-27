@@ -1,0 +1,36 @@
+from google.colab import files
+answer1 = 0
+answer2 = 0
+uploaded = files.upload()
+
+def find_max_value(numeric_string,numbers_left):
+  tmpValue = 0
+  maxFirstValue = 9
+  while tmpValue == 0:
+    for i in range(0, len(numeric_string)-numbers_left + 1):
+      if int(numeric_string[i]) == maxFirstValue:
+        if(numbers_left > 1):
+          return str(maxFirstValue) + str(find_max_value(numeric_string[i+1:],numbers_left-1))
+        else: 
+          return maxFirstValue
+    maxFirstValue -= 1
+
+for filename in uploaded.keys():
+  with open(filename, 'r') as file:
+      for line in file:
+          numeric_string = line.strip()
+
+          # Part 1 will be solved by finding the two largest numbers
+          maxValue = 0
+          for i in range(0, len(numeric_string)):
+            for j in range(i+1, len(numeric_string)):
+              tmpValue = int(numeric_string[i]+numeric_string[j])
+              if tmpValue > maxValue:
+                maxValue = tmpValue
+          answer1 += maxValue
+
+          # Part 2 will be solved by finding the highest value with 10 digits after
+          # then the largest value with 9 digits after etc.
+          answer2 += int(find_max_value(numeric_string,12))
+
+print(f"Answers: {answer1} and {answer2}")
