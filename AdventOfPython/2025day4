@@ -1,0 +1,57 @@
+from google.colab import files
+answer1 = 0
+answer2 = 0
+uploaded = files.upload()
+grid_data = []
+for filename in uploaded.keys():
+  with open(filename, 'r') as file:
+      for line in file:
+          numeric_string = line.strip()
+          grid_data.append(list(numeric_string))
+
+# count how many neighbours that exist in each position
+def count_populated_neighbors(grid, row, col, target_char):
+    rows = len(grid)
+    cols = len(grid[0])
+    populated_neighbors_count = 0
+    neighbor_offsets = [
+        (-1, -1), (-1, 0), (-1, 1),
+        (0, -1),           (0, 1),
+        (1, -1),  (1, 0),  (1, 1)
+    ]
+    for dr, dc in neighbor_offsets:
+        n_row, n_col = row + dr, col + dc
+        # Make sure we check inside grid
+        if 0 <= n_row < rows and 0 <= n_col < cols:
+            if grid[n_row][n_col] == target_char:
+                populated_neighbors_count += 1
+    return populated_neighbors_count
+
+answer1 = 0
+
+rows = len(grid_data)
+cols = len(grid_data[0])
+
+# First answer: Loop through all positions and count how many rolls of paper that have less than 4 neighbours
+for row_idx in range(rows):
+    for col_idx in range(cols):
+        count = count_populated_neighbors(grid_data, row_idx, col_idx, '@')
+        if(grid_data[row_idx][col_idx] == '@') and count<4:
+          answer1 += 1
+
+print (answer1)
+
+# Answer 2: Remove all rolls with less than 4 neighbours. Count how many that was removed in total. 
+
+removed = 1
+while removed > 0:
+  removed = 0
+  for row_idx in range(rows):
+    for col_idx in range(cols):
+        count = count_populated_neighbors(grid_data, row_idx, col_idx, '@')
+        if(grid_data[row_idx][col_idx] == '@') and count<4:
+          answer2 += 1
+          removed += 1
+          grid_data[row_idx][col_idx] = '.'
+
+print (answer2)
