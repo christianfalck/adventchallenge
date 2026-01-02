@@ -1,0 +1,37 @@
+def run_operation(matrix, operators):
+  answer = 0
+  for a in range(len(matrix[0])):
+    if(operators[a] == '+'):
+      column = 0
+      for row in matrix:
+        column += row[a]
+      answer+=column
+    elif (operators[a] == '*'):
+      column = 1 
+      for row in matrix:
+        column *= row[a]
+      answer+=column
+  return answer
+
+
+from google.colab import files
+uploaded = files.upload()
+
+for filename in uploaded.keys():
+  with open(filename, 'r') as file:
+      numbers = []
+      operators = []
+
+      for line in file:
+          line = line.strip()
+          try:
+              current_row = [int(part) for part in line.split()]
+              numbers.append(current_row)
+          except ValueError:
+              # TODO: handle this without errors
+              if not operators:
+                  operators = line.split()
+
+      answer1=run_operation(numbers, operators)
+
+      print(answer1)
