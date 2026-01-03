@@ -1,0 +1,67 @@
+from google.colab import files
+uploaded = files.upload()
+filename = list(uploaded.keys())[0]
+start_index = -1
+all_splitters = []
+found_start = False
+line_count_after_s = 0
+
+# Parse the file: Find the start index and all splitters
+with open(filename, 'r') as file:
+    for line_num, line in enumerate(file):
+        cleaned_line = line.strip()
+        if not found_start:
+            if 'S' in cleaned_line:
+                start_index = cleaned_line.find('S')
+                found_start = True
+        else:
+            line_count_after_s += 1
+            if line_count_after_s % 2 == 0: # Every second line is just .
+                splitters = []
+                for i, char in enumerate(cleaned_line):
+                    if char == '^':
+                        splitters.append(i)
+                all_splitters.append(splitters)
+
+# Part 1: Here we don't have multiple beams
+active_beams = []
+active_beams.append(start_index)
+answer1 = 0 #how many splits we have
+# Part 2: Here we need to find every unique way. 
+# Since it will overload, we need to find a better way to represent beams: Using a dictionary
+active_multiple_beams = []
+active_multiple_beams = {start_index: 1}
+answer2 = 0
+for splitters in all_splitters: #one row at the time
+    tmp_active_beams = active_beams.copy() # part 1
+    tmp_active_multiple_beams = active_multiple_beams.copy() # part 2
+    for splitter_index in splitters: #one splitter at the time
+      # part 1
+      if splitter_index in active_beams:
+        answer1+=1
+        tmp_active_beams.remove(splitter_index)
+        if splitter_index-1 not in tmp_active_beams:
+          tmp_active_beams.append(splitter_index-1)
+        if splitter_index+1 not in tmp_active_beams:
+          tmp_active_beams.append(splitter_index+1)
+    # part 2
+    for key, value in active_multiple_beams.items():
+      if key in splitters: #key is the beam index
+        del tmp_active_multiple_beams[key]
+        if key-1 in tmp_active_multiple_beams:
+          tmp_active_multiple_beams[key-1] += value
+        else:
+          tmp_active_multiple_beams[key-1] = value
+        if key+1 in tmp_active_multiple_beams:
+          tmp_active_multiple_beams[key+1] += value
+        else:
+          tmp_active_multiple_beams[key+1] = value
+    active_beams = tmp_active_beams # part 1
+    active_multiple_beams = tmp_active_multiple_beams # part 2
+
+# part 2
+for key in active_multiple_beams:
+  answer2 += active_multiple_beams[key]
+
+print(f"Answer 1: {answer1}")
+print(f"Answer 2: {answer2}")
