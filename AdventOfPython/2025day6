@@ -1,3 +1,4 @@
+# Use each operator on that index of each row
 def run_operation(matrix, operators):
   answer = 0
   for a in range(len(matrix[0])):
@@ -13,6 +14,46 @@ def run_operation(matrix, operators):
       answer+=column
   return answer
 
+# Use each operator on all elements of the corresponding vector
+def run_operation2(matrix, operators):
+  answer = 0
+  for a in range(len(operators)):
+    sumproduct = 0
+    if(operators[a] == '+'):
+      for number in matrix[a]:
+        sumproduct+=number
+    elif(operators[a] == '*'):
+      sumproduct = 1
+      for number in matrix[a]:
+        sumproduct*=number
+    answer+=sumproduct
+  return answer
+
+# Transpose the matrix
+def transpose_lines(lines):
+    rows = len(lines)
+    cols = len(lines[0])-1
+    transposed_matrix = [[None for _ in range(rows)] for _ in range(cols)]
+    for i in range(rows):
+      for j in range(cols):
+        transposed_matrix[j][i] = lines[i][j]
+    return transposed_matrix
+
+# Take the transposed matrix and create a matrix 
+# where each row is elements that should be added or multiplied with eachother
+def format_matrix(matrix):
+  formatted_matrix = []
+  numbers = []
+  for row_list in matrix:
+      joined_string = "".join(row_list)
+      cleaned_string = joined_string.replace(' ', '')
+      if cleaned_string.isdigit():
+          numbers.append(int(cleaned_string))
+      else:
+          formatted_matrix.append(numbers)
+          numbers = []
+  formatted_matrix.append(numbers)
+  return formatted_matrix
 
 from google.colab import files
 uploaded = files.upload()
@@ -21,17 +62,21 @@ for filename in uploaded.keys():
   with open(filename, 'r') as file:
       numbers = []
       operators = []
-
+      lines = []
       for line in file:
-          line = line.strip()
           try:
               current_row = [int(part) for part in line.split()]
               numbers.append(current_row)
+              lines.append(line)
           except ValueError:
-              # TODO: handle this without errors
               if not operators:
                   operators = line.split()
 
       answer1=run_operation(numbers, operators)
+      
+      matrix = transpose_lines(lines)
+      formatted_matrix = format_matrix(matrix)
+      answer2=run_operation2(formatted_matrix, operators)
 
       print(answer1)
+      print(answer2)
