@@ -1,0 +1,123 @@
+from google.colab import files
+import pandas as pd
+from scipy.spatial.distance import cdist
+import itertools
+
+uploaded = files.upload()
+filename = __builtins__.list(uploaded.keys())[0]
+data = []
+
+with open(filename, 'r') as file:
+    for line_num, line in enumerate(file):
+        parts = line.strip().split(',')
+        # Some error handling
+        if len(parts) == 3:
+            try:
+                x = float(parts[0])
+                y = float(parts[1])
+                z = float(parts[2])
+                data.append([x, y, z])
+            except ValueError:
+                print(f"Skipping line due to non-float values: {line.strip()}")
+        else:
+            print(f"Skipping line due to incorrect number of parts: {line.strip()}")
+
+df_box_data = pd.DataFrame(data, columns=['X', 'Y', 'Z'])
+coordinates = df_box_data[['X', 'Y', 'Z']].values
+pairwise_distances = cdist(coordinates, coordinates, 'euclidean')
+
+distances_and_pairs = []
+num_boxes = coordinates.shape[0]
+
+# Iterate through unique pairs of boxes to store distances and indices
+for i, j in itertools.combinations(range(num_boxes), 2):
+    distance = pairwise_distances[i, j]
+    distances_and_pairs.append((distance, (i, j)))
+
+# Sort distances, used in the assignment to start with smallest
+distances_and_pairs.sort(key=lambda x: x[0])
+
+boxes = []
+iteration_count = 0
+for distance, pair in distances_and_pairs:
+    if iteration_count >= 1000:
+        break
+    # if one of the pairs exist in a dictionary list, add the other one as well.
+    # if both exist in two dictionary lists, merge the lists
+    # if neither exist in a dictionary list, create a new one with these two
+    # can both be in the same list already? probably. then do nothing
+    index0 = -1
+    index1 = -1
+    for box_list in boxes:
+      if pair[0] in box_list:
+        index0 = box_list
+      if pair[1] in box_list:
+        index1 = box_list
+    if index0 != -1 and index0 == index1:
+      pass #already same list, do nothing
+    elif index0 == -1 and index1 == -1:
+      boxes.append([pair[0], pair[1]]) # add new list
+    elif index0 == -1:
+      boxes[boxes.index(index1)].append(pair[0]) # first box not in list, add to list of box 2
+    elif index1 == -1:
+      boxes[boxes.index(index0)].append(pair[1]) # second box not in list, add to list of box 1
+    else:
+      # they are both of different lists
+      # Merge index1 into index0 and remove index1
+      boxes[boxes.index(index0)].extend(boxes[boxes.index(index1)])
+      boxes.remove(index1)
+    iteration_count += 1
+
+
+#Find the three largest connections after 1000 iterations
+largest = -1
+second_largest = -1
+third_largest = -1
+for box in boxes:
+  if len(box) > largest:
+    third_largest = second_largest
+    second_largest = largest
+    largest = len(box)
+  elif len(box) > second_largest:
+    third_largest = second_largest
+    second_largest = len(box)
+  elif len(box) > third_largest:
+    third_largest = len(box)
+answer1 = largest * second_largest * third_largest
+
+# Part 2
+boxes = []
+answer2NotFound = True
+answer2 = 0
+
+#part 2 is same logic as part 1 but continue until all boxes are connected
+#Note that this is not the same as the boxes with the largest distance as
+#both of them might (will) already be a part of other connections
+for distance, pair in distances_and_pairs:
+    index0 = -1
+    index1 = -1
+    for box_list in boxes:
+      if pair[0] in box_list:
+        index0 = box_list
+      if pair[1] in box_list:
+        index1 = box_list
+    if index0 != -1 and index0 == index1:
+      pass 
+    elif index0 == -1 and index1 == -1:
+      boxes.append([pair[0], pair[1]])
+    elif index0 == -1:
+      boxes[boxes.index(index1)].append(pair[0]) 
+    elif index1 == -1:
+      boxes[boxes.index(index0)].append(pair[1]) 
+    else:
+      boxes[boxes.index(index0)].extend(boxes[boxes.index(index1)])
+      boxes.remove(index1)
+    if(len(boxes[0]) == num_boxes and answer2NotFound):
+      x_value_box1 = coordinates[pair[0], 0]
+      x_value_box2 = coordinates[pair[1], 0]
+      answer2 = x_value_box1 * x_value_box2
+      answer2NotFound = False
+      break
+
+print(f"Answer 1: {answer1}")
+print(f"Answer 2: {answer2}")
