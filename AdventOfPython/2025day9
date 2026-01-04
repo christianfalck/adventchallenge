@@ -1,0 +1,28 @@
+rom google.colab import files
+
+uploaded = files.upload()
+filename = list(uploaded.keys())[0]
+
+xy_coordinates = []
+with open(filename, 'r') as file:
+    for line_num, line in enumerate(file):
+        parts = line.strip().split(',')
+        if len(parts) == 2:
+            try:
+                x = float(parts[0])
+                y = float(parts[1])
+                xy_coordinates.append([x, y])
+            except ValueError:
+                print(f"Skipping line {line_num + 1} due to non-float values: {line.strip()}")
+        else:
+            print(f"Skipping line {line_num + 1} due to incorrect number of parts (expected 2): {line.strip()}")
+
+answer1 = 0
+
+for x1, y1 in xy_coordinates:
+  for x2, y2 in xy_coordinates:
+    rectangle = (abs(x1-x2)+1)*(abs(y1-y2)+1)  
+    if rectangle > answer1:
+      answer1 = rectangle
+
+print("Answer 1: ", answer1)
