@@ -1,0 +1,71 @@
+from google.colab import files
+
+uploaded = files.upload()
+filename = list(uploaded.keys())[0]
+
+paths = {}
+with open(filename, 'r') as file:
+    for line_num, line in enumerate(file):
+        cleaned_line = line.strip()
+        parts = cleaned_line.split(':', 1) # Split only on the first colon
+        if len(parts) == 2:
+            key = parts[0].strip()
+            values_str = parts[1].strip()
+            values = [v.strip() for v in values_str.split(' ') if v.strip()]
+            paths[key] = values
+
+def take_a_step(device):
+  ways_to_go = 0
+  for outputs in paths[device]:
+    if outputs == 'out':
+      ways_to_go += 1
+    else:
+      ways_to_go += take_a_step(outputs)
+  return ways_to_go
+
+# Adding functionality to just having to visit each device once
+known_devices = {}
+
+def take_another_step(device):
+  ways_to_go = 0
+  visited_dac = (device == 'dac')
+  visited_fft = (device == 'fft')
+  steps_with_dac = 0
+  steps_with_fft = 0
+  steps_witout = 0
+  steps_with_both = 0
+  for outputs in paths[device]:
+    if outputs == 'out':
+      steps_witout += 1
+    else:
+      if outputs in known_devices:
+        tmp_steps, tmp_dac, tmp_fft = known_devices[outputs]
+      else:
+        tmp_steps, tmp_dac, tmp_fft = take_another_step(outputs)
+      if tmp_dac and tmp_fft:
+        steps_with_both += tmp_steps
+      elif tmp_dac and not tmp_fft:
+        steps_with_dac += tmp_steps
+      elif not tmp_dac and tmp_fft:
+        steps_with_fft += tmp_steps
+      else:
+        steps_witout += tmp_steps
+
+  if(steps_with_both > 0):
+    known_devices[device] = (steps_with_both, True, True)
+    return steps_with_both, True, True
+  elif steps_with_dac > 0:
+    known_devices[device] = (steps_with_dac, True, visited_fft)
+    return steps_with_dac, True, visited_fft
+  elif steps_with_fft > 0:
+    known_devices[device] = (steps_with_fft, visited_dac, True)
+    return steps_with_fft, visited_dac, True
+  else:
+    known_devices[device] = (steps_witout, visited_dac, visited_fft)
+    return steps_witout, visited_dac, visited_fft
+
+answer1 = take_a_step('you')
+print(f"Answer 1: {answer1}")
+
+answer2 = take_another_step('svr')
+print(f"Answer 2: {answer2}")
