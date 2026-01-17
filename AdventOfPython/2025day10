@@ -1,0 +1,55 @@
+from google.colab import files
+import re
+
+# First check if we've already pushed all buttons, then stop
+# Next, test all buttons: 
+# - If a button results in all zeros, we've found one combination of buttons that work
+# (And we don't need to check the other buttons since it will take more pushes)
+# Otherwise, continue pressing buttons recursively
+# Also: I added a check that stops if we've been at this state with fewer pushes before
+def pushButtons(key, buttons, keysVisited, pushes):
+  if(len(buttons)< pushes):
+    return -1 #We've already pushes all buttons
+  compare = -1
+  for button in buttons:
+    tmpkey_list = [int(c) for c in key]
+    for change in button:
+      tmpkey_list[change] = abs(tmpkey_list[change] - 1) # Invert 0/1
+    newkey = "".join(str(x) for x in tmpkey_list)
+    if all(char == '0' for char in newkey):
+      return pushes
+    # we stop if we've been here before at a shorter path, otherwise move on
+    if (newkey in keysVisited and keysVisited[newkey] > pushes) or newkey not in keysVisited:
+      keysVisited[newkey] = pushes
+      result = pushButtons(newkey, buttons, keysVisited, pushes+1)
+      if result > 0 and (compare < 0 or compare > result):
+        compare = result
+  return compare
+
+uploaded = files.upload()
+filename = list(uploaded.keys())[0]
+
+paths = {}
+index = 0
+with open(filename, 'r') as file:
+    for line_num, line in enumerate(file):
+        cleaned_line = line.strip()
+        initial_pattern_match = re.match(r'\[([.#]+)\]', cleaned_line)
+        if initial_pattern_match:
+            key_raw = initial_pattern_match.group(1)
+            key_string = key_raw.replace('.', '0').replace('#', '1') 
+            buttons = re.findall(r'\(([^)]*)\)', cleaned_line)
+            buttonsAsList = []
+            for b_str in buttons:
+                buttonsAsList.append([int(idx) for idx in b_str.split(',')])
+            paths[index] = (key_string, buttonsAsList) 
+            index += 1
+
+answer1 = 0
+for idx in paths: 
+  current_key_string, current_buttons_list = paths[idx]
+  keysVisited = {}
+  keysVisited[current_key_string] = 0 
+  partAnswer = pushButtons(current_key_string, current_buttons_list, keysVisited, 1)
+  answer1 += partAnswer
+print(answer1)
